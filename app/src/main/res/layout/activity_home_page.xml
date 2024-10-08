@@ -12,6 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:hint="Search"
         android:padding="12dp"
         android:background="@drawable/search_bar_background" />
@@ -22,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/searchBar"
         android:layout_marginTop="22dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:background="@drawable/rounded_button"
         android:text="Upload Video" />
 
@@ -32,6 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/uploadVideoButton"
         android:layout_marginTop="12dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:text="Bulk Upload"
         android:background="@drawable/rounded_button" />
 
@@ -41,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/bulkUploadButton"
         android:layout_marginTop="12dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:text="Library"
         android:background="@drawable/rounded_button" />
 
@@ -50,6 +59,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/Analytics"
         android:layout_marginTop="12dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:text="Settings"
         android:background="@drawable/rounded_button" />
 
@@ -59,6 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/Library"
         android:layout_marginTop="12dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:text="Analytics"
         android:background="@drawable/rounded_button" />
 

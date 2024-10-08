@@ -18,19 +18,22 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page);
+
+        // Remove action window
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.homePage), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        Button upload = findViewById(R.id.btnUpload);
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomePage.this, Upload.class);
-                startActivity(intent);
-            }
+        Button upload = findViewById(R.id.uploadVideoButton);
+        upload.setOnClickListener(view -> {
+            Intent intent = new Intent(HomePage.this, Upload.class);
+            startActivity(intent);
         });
 
     }
