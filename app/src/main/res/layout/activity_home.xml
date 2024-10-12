@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".HomePage"
-    android:background="@drawable/bg">
+    android:background="@drawable/homepage_background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/upload_arrow" />
+                            android:src="@drawable/homepage_upload_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/bulk_upload" />
+                            android:src="@drawable/homepage_bulk_upload_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -157,7 +157,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/library" />
+                            android:src="@drawable/homepage_library_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -196,7 +196,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/analytcs" />
+                            android:src="@drawable/homepage_analytics_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -238,7 +238,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/users" />
+                            android:src="@drawable/homepage_users_button" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -277,7 +277,7 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/settings" />
+                            android:src="@drawable/homepage_settings_button" />
 
                         <TextView
                             android:layout_width="wrap_content"

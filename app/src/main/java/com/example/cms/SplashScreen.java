@@ -20,7 +20,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_splash_screen);
+        setContentView(R.layout.activity_lauching_splash);
 
         // Deixa splash screen in fullscreen
         getWindow().setFlags(
@@ -29,7 +29,7 @@ public class SplashScreen extends AppCompatActivity {
         );
 
         ImageView splash = findViewById(R.id.splash_image);
-        splash.setImageResource(R.drawable.json);
+        splash.setImageResource(R.drawable.lauching_splash);
         getWindow().getDecorView().setBackgroundColor(Color.parseColor("#f7fbff"));
 
         Drawable drawable = splash.getDrawable();
