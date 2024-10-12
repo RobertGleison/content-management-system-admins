@@ -18,7 +18,7 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_home_page);
+        setContentView(R.layout.activity_teste);
         getWindow().getDecorView().setBackgroundColor(Color.WHITE);
 
         // Remove action window
@@ -26,17 +26,8 @@ public class HomePage extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.homePage), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
-        Button upload = findViewById(R.id.uploadVideoButton);
-        upload.setOnClickListener(view -> {
-            Intent intent = new Intent(HomePage.this, Upload.class);
-            startActivity(intent);
-        });
+
 
     }
 }

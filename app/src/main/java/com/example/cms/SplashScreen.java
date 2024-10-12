@@ -29,8 +29,8 @@ public class SplashScreen extends AppCompatActivity {
         );
 
         ImageView splash = findViewById(R.id.splash_image);
-        splash.setImageResource(R.drawable.white_splash);
-        getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+        splash.setImageResource(R.drawable.json);
+        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#f7fbff"));
 
         Drawable drawable = splash.getDrawable();
         if (drawable instanceof Animatable) {
