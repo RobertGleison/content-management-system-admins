@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary_blue">#246fbf </color>
     <color name="backgroud_gray"> #dbedff</color>
+    <color name="click_color"> #dfe4eb</color>
 </resources>

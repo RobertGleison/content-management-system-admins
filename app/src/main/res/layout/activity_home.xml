@@ -54,6 +54,7 @@
 
                 <!-- Column 1 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/homepage_upload_card"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
@@ -61,7 +62,9 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
@@ -93,6 +96,7 @@
 
                 <!-- Column 2 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/homepage_bulk_upload_card"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
@@ -100,7 +104,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
@@ -135,6 +139,7 @@
 
                 <!-- Column 1 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/homepage_library"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
@@ -142,7 +147,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
@@ -174,6 +179,7 @@
 
                 <!-- Column 2 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/homepage_analytics"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
@@ -181,7 +187,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
@@ -216,6 +222,7 @@
 
                 <!-- Column 1 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/homepage_users"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
@@ -223,7 +230,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
@@ -255,6 +262,7 @@
 
                 <!-- Column 2 -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/homepage_settings"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
@@ -262,7 +270,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
