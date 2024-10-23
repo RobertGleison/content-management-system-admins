@@ -1,88 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/upload_file_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/upload_file_page"
-    tools:context=".Upload">
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp"
-        android:padding="16dp"
-        tools:ignore="UselessParent">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Insert video information"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_movie_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Movie Title"
+                android:inputType="textMultiLine"
+                android:padding="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_movie_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Movie Description"
+                android:inputType="textMultiLine"
+                android:padding="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_movie_genre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Movie Genre"
+                android:inputType="textMultiLine"
+                android:padding="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_movie_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Movie Year"
+                android:inputType="number"
+                android:padding="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_movie_publisher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Movie Publisher"
+                android:inputType="textMultiLine"
+                android:padding="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_edit_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_movie_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Movie Duration (minutes)"
+                android:inputType="time"
+                android:padding="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/add_files_card"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            android:layout_margin="16dp">
+            android:layout_height="70dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_centerHorizontal="true"
-                    android:contentDescription="Upload files button"
-                    android:src="@drawable/storage_sign"
-                    android:layout_marginBottom="60dp"
-                    android:layout_marginTop="10dp"
-                    android:alpha="0.3"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/dashed_border"
-                    android:layout_margin="10dp"/>
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/text_video_name"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingTop="150dp"
-                    android:text="Add your files here"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="18sp"/>
+                    android:layout_weight="1"
+                    android:text="Select Video"
+                    android:textSize="16sp"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
 
-            </RelativeLayout>
-
+                <ImageView
+                    android:id="@+id/image_video_upload"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="Upload video"
+                    android:padding="4dp"
+                    android:src="@drawable/upload_add_media" />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/file_info_text_view"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_thumbnail_upload"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:textAlignment="center"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
-            android:ellipsize="end"
-            android:maxLines="2" />
+            android:layout_height="70dp"
+            android:layout_marginBottom="32dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/text_thumbnail_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Select Thumbnail"
+                    android:textSize="16sp"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
+
+                <ImageView
+                    android:id="@+id/image_thumbnail_upload"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="Upload thumbnail"
+                    android:padding="4dp"
+                    android:src="@drawable/upload_add_media" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/submit_file_button"
+            android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            app:cornerRadius="8dp"
-            android:text="Submit"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/white"
             android:backgroundTint="@color/primary_blue"
-            android:layout_marginTop="16dp"/>
+            android:text="Submit"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
-</RelativeLayout>
+</ScrollView>
