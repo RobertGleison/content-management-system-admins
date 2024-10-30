@@ -4,5 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary_blue">#246fbf </color>
     <color name="backgroud_gray"> #dbedff</color>
+    <color name="secondary_blue"> #dbedff</color>
     <color name="click_color"> #dfe4eb</color>
+    <color name="actionbar_blue">#246FBF</color>
+    <color name="dark_background">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="light_gray">#CCCCCC</color>
+    <color name="ripple_dark">#454545</color>
+    <color name="splash_background">#f7fbff</color>
 </resources>

@@ -5,8 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:fitsSystemWindows="true"
     android:overScrollMode="never"
-    android:scrollbars="none">
+    android:scrollbars="vertical"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,18 +19,11 @@
         android:clipToPadding="false"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Insert video information"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/bg_edit_text">
 
@@ -121,6 +116,8 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginBottom="16dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
 
@@ -156,6 +153,8 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginBottom="32dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
 
@@ -190,11 +189,13 @@
             android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:layout_marginBottom="50dp"
             android:backgroundTint="@color/primary_blue"
             android:text="Submit"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
     </LinearLayout>
 </ScrollView>

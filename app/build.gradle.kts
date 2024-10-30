@@ -2,12 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+
+
 android {
-    namespace = "com.example.cms"
+    namespace = "com.backend.cms"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.cms"
+        applicationId = "com.backend.cms"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -32,6 +34,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.core.splashscreen)
+    compileOnly(libs.lombok)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.appcompat)

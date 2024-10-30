@@ -1,47 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- Functionalities Explained:
+
+    Application Level:
+    - android:allowBackup="true" -> Allows user data backup and restore
+    - android:usesCleartextTraffic="true" -> Permits non-HTTPS connections
+    - android:theme="@style/CustomLightTheme" -> Applies custom light theme to all activities
+
+    Permissions:
+    - INTERNET -> Essential for network operations and API calls
+    - ACCESS_NETWORK_STATE -> Monitors network connectivity status
+    - READ_MEDIA_* -> Modern permission model for Android 13+ media access
+    - READ_EXTERNAL_STORAGE -> Legacy permission for older Android versions
+
+    SplashScreen Activity:
+    - android:exported="true" -> Accessible from launcher
+    - android:theme="@style/Theme.AppCompat.NoActionBar" -> Fullscreen splash
+    - intent-filter MAIN/LAUNCHER -> Makes it the app entry point
+
+    HomePage Activity:
+    - android:exported="true" -> Can be accessed from other apps
+    - Inherits application theme
+
+    Upload Activity:
+    - android:windowSoftInputMode="adjustResize" -> Resizes screen when keyboard appears
+    - android:parentActivityName -> Enables back navigation to HomePage
+    - android:exported="false" -> Only accessible within the app
+    - android:label -> Sets toolbar title to "Upload Video"
+
+    Note: android:maxSdkVersion="32" on READ_EXTERNAL_STORAGE means this permission
+    is only requested on Android 12 and below, as newer versions use READ_MEDIA_* permissions
+-->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- Application Configuration -->
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/light_theme"
-        tools:targetApi="31">
+        android:theme="@style/CustomLightTheme"
+        android:usesCleartextTraffic="true">
 
+    <!-- Splash Screen: Application Entry Point -->
         <activity
-            android:name=".SplashScreen"
+            android:name=".activities.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Home Page: Main Application Screen -->
         <activity
-            android:name=".Upload"
+            android:name=".activities.HomePageActivity"
+            android:exported="true"
+            android:theme="@style/CustomLightTheme">
+        </activity>
+
+        <!-- Upload Screen: Media Upload Interface -->
+        <activity
+            android:name=".activities.Upload"
             android:exported="false"
             android:label="Upload Video"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".HomePage">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomePage" />
-        </activity>
-        <activity
-            android:name=".HomePage"
-            android:exported="true"
-            android:theme="@style/light_theme">
-        </activity>
+            android:parentActivityName=".activities.HomePageActivity"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>
+
+

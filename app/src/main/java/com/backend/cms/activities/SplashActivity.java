@@ -1,28 +1,29 @@
-package com.example.cms;
+package com.backend.cms.activities;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Handler;
+import androidx.core.content.ContextCompat;
+import androidx.activity.EdgeToEdge;
+
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Bundle;
+import com.backend.cms.R;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class SplashScreen extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private static final int SPLASH_TIME = 2500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_lauching_splash);
 
-        // Deixa splash screen in fullscreen
+        // Implement splash in fullscreen
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -30,19 +31,19 @@ public class SplashScreen extends AppCompatActivity {
 
         ImageView splash = findViewById(R.id.splash_image);
         splash.setImageResource(R.drawable.lauching_splash);
-        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#f7fbff"));
+        getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(this, R.color.splash_background));
 
         Drawable drawable = splash.getDrawable();
-        if (drawable instanceof Animatable) {
-            ((Animatable) drawable).start()
-;        }
+        if (drawable instanceof Animatable)
+            ((Animatable) drawable).start();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashScreen.this, HomePage.class);
+                Intent intent = new Intent(SplashActivity.this, HomePageActivity.class);
                 startActivity(intent);
                 finish();
             }
-        }, SPLASH_TIME); //
+        }, SPLASH_TIME);
     }
 }
