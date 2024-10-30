@@ -1,9 +1,11 @@
 package com.backend.cms.utils;
 
+import com.backend.cms.entities.Media;
+
 import java.io.File;
 import java.time.Year;
 
-public class FormValidation {
+public class UploadValidator {
     private static final long MAX_VIDEO_SIZE = 2000 * 1024 * 1024; // 2GB
     private static final long MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -20,42 +22,42 @@ public class FormValidation {
     private static final String[] VALID_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"};
 
 
-    private String validateTitle(String title) {
+    private static String validateTitle(String title) {
         if (title == null || title.trim().isEmpty()) return "Title is required";
         if (title.length() > MAX_TITLE_LENGTH)
             return "Title cannot exceed " + MAX_TITLE_LENGTH + " characters";
         return null;
     }
 
-    private String validateDescription(String description) {
+    private static String validateDescription(String description) {
         if (description == null || description.trim().isEmpty()) return "Description is required";
         if (description.length() > MAX_DESCRIPTION_LENGTH)
             return "Description cannot exceed " + MAX_DESCRIPTION_LENGTH + " characters";
         return null;
     }
 
-    private String validateGenre(String genre) {
+    private static String validateGenre(String genre) {
         if (genre == null || genre.trim().isEmpty()) return "Genre is required";
         if (genre.length() > MAX_GENRE_LENGTH)
             return "Genre cannot exceed " + MAX_GENRE_LENGTH + " characters";
         return null;
     }
 
-    private String validateYear(Integer year) {
+    private static String validateYear(Integer year) {
         if (year == null) return "Year is required";
         if (year < MIN_YEAR) return "Year must be between " + MIN_YEAR + " and " + MAX_YEAR;
         if (year > MAX_YEAR) return "Year must be less then current year";
         return null;
     }
 
-    private String validatePublisher(String publisher) {
+    private static String validatePublisher(String publisher) {
         if (publisher == null || publisher.trim().isEmpty()) return "Publisher is required";
         if (publisher.length() > MAX_PUBLISHER_LENGTH)
             return "Publisher cannot exceed " + MAX_PUBLISHER_LENGTH + " characters";
         return null;
     }
 
-    private String validateDuration(Integer duration) {
+    private static String validateDuration(Integer duration) {
         if (duration == null) return "Duration is required";
         if (duration <= 0) return "Duration must be greater than 0";
         if (duration > MAX_MINUTES_DURATION)
@@ -63,7 +65,7 @@ public class FormValidation {
         return null;
     }
 
-    private String validateVideo(File videoFile) {
+    private static String validateVideo(File videoFile) {
         if (videoFile == null) return "Video file is required";
         if (!videoFile.exists()) return "Video file does not exist";
         if (!videoFile.isFile()) return "Invalid video file";
@@ -85,7 +87,7 @@ public class FormValidation {
         return null;
     }
 
-    private String validateThumbnail(File imageFile) {
+    private static String validateThumbnail(File imageFile) {
         if (imageFile == null) return "Thumbnail is required";
         if (!imageFile.exists()) return "Thumbnail file does not exist";
         if (!imageFile.isFile()) return "Invalid thumbnail file";
@@ -108,7 +110,7 @@ public class FormValidation {
     }
 
 
-    private String validateFiles(File videoFile, File thumbnailFile) {
+    private static String validateFiles(File videoFile, File thumbnailFile) {
         String[] validations = {
                 validateVideo(videoFile),
                 validateThumbnail(thumbnailFile),
@@ -121,7 +123,7 @@ public class FormValidation {
 
     }
 
-    private String validateFields(String title,
+    private static String validateFields(String title,
                                  String description,
                                  String genre,
                                  Integer year,
@@ -143,18 +145,9 @@ public class FormValidation {
         return null;
     }
 
-    public String validation(String title,
-                             String description,
-                             String genre,
-                             Integer year,
-                             String publisher,
-                             Integer duration,
-                             File videoFile,
-                             File thumbnailFile
-    ) {
-
+    public static String validation(Media media, File videoFile, File thumbnailFile) {
         String[] validations = {
-                validateFields(title, description, genre, year, publisher, duration),
+                validateFields(media.getTitle(), media.getDescription(), media.getGenre(), media.getYear(), media.getPublisher(), media.getDuration()),
                 validateFiles(videoFile, thumbnailFile)};
 
         for (String error : validations)
