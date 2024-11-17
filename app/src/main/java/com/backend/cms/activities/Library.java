@@ -2,13 +2,7 @@ package com.backend.cms.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,69 +10,94 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.backend.cms.R;
+import com.backend.cms.utils.MockDataGenerator;
 import com.backend.cms.utils.MovieAdapter;
 import com.backend.cms.entities.MediaResponse;
 import com.backend.cms.retrofitAPI.RetrofitClient;
+import com.backend.cms.utils.MovieDetailsDialog;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Library extends BaseActivity implements MovieAdapter.OnMovieClickListener {
-    private MovieAdapter movieAdapter;
+    private MovieAdapter adapter;
     private ProgressBar loadingIndicator;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Spinner genreSpinner;
-    private SearchView searchView;
-    private String currentGenre = "";
-    private String currentSearch = "";
-
-    private static final String[] GENRES = {
-            "All Genres", "Drama", "Comedy", "Action",
-            "Terror", "Fiction", "Fantasy", "Animation"
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library_card);
 
-        initializeViews();
-        setupRecyclerView();
-        setupSwipeRefresh();
-        setupGenreSpinner();
-        setupSearchView();
-
-        // Initial load
-        loadMedia();
+        setupViews();
+        loadMovies();
     }
 
-    private void initializeViews() {
-        loadingIndicator = findViewById(R.id.loading_indicator);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        genreSpinner = findViewById(R.id.genreSpinner);
-        searchView = findViewById(R.id.searchView);
-    }
-
-    private void setupRecyclerView() {
+    private void setupViews() {
+        // Initialize RecyclerView
         RecyclerView recyclerView = findViewById(R.id.movies_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        movieAdapter = new MovieAdapter(this);
-        recyclerView.setAdapter(movieAdapter);
+        adapter = new MovieAdapter(this);
+        recyclerView.setAdapter(adapter);
+
+        // Initialize SwipeRefreshLayout
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this::loadMovies);
+
+        // Initialize loading indicator
+        loadingIndicator = findViewById(R.id.loading_indicator);
     }
 
-    private void setupSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener(this::loadMedia);
+    private void loadMovies() {
+        showLoading(true);
+        new android.os.Handler().postDelayed(() -> {
+            // Create mock data
+            List<MediaResponse> mockMovies = MockDataGenerator.createMockData();
+
+            // Update UI
+            showLoading(false);
+            adapter.setMovies(mockMovies);
+        }, 1000);
+//        RetrofitClient.getInstance()
+//                .getApi()
+//                .getAllMedia()
+//                .enqueue(new Callback<List<MediaResponse>>() {
+//                    @Override
+//                    public void onResponse(Call<List<MediaResponse>> call, Response<List<MediaResponse>> response) {
+//                        showLoading(false);
+//                        if (response.isSuccessful() && response.body() != null) {
+//                            adapter.setMovies(response.body());
+//                        } else {
+//                            showError("Failed to load movies");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<List<MediaResponse>> call, Throwable t) {
+//                        showLoading(false);
+//                        showError("Error: " + t.getMessage());
+//                    }
+//                });
     }
 
 
 
 
     private void showLoading(boolean show) {
-        loadingIndicator.setVisibility(show ? View.VISIBLE : View.GONE);
-        swipeRefreshLayout.setRefreshing(false);
+        if (loadingIndicator != null) {
+            loadingIndicator.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private void showError(String message) {
@@ -87,31 +106,7 @@ public class Library extends BaseActivity implements MovieAdapter.OnMovieClickLi
 
     @Override
     public void onMovieClick(MediaResponse media) {
-        loadMediaDetails(media.getId());
-    }
-
-    private void loadMediaDetails(UUID id) {
-        RetrofitClient.getInstance().getApi().getMediaById(id)
-                .enqueue(new Callback<MediaResponse>() {
-                    @Override
-                    public void onResponse(Call<MediaResponse> call, Response<MediaResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            showMediaDetails(response.body());
-                        } else {
-                            showError("Failed to load media details");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<MediaResponse> call, Throwable t) {
-                        showError("Error loading details: " + t.getMessage());
-                    }
-                });
-    }
-
-    private void showMediaDetails(MediaResponse media) {
-        // Implement your detail view logic here
-        Toast.makeText(this, "Selected: " + media.getTitle(),
-                Toast.LENGTH_SHORT).show();
+        MovieDetailsDialog dialog = MovieDetailsDialog.newInstance(media);
+        dialog.show(getSupportFragmentManager(), "movie_details");
     }
 }

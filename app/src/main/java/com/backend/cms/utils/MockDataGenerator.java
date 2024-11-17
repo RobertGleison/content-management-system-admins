@@ -26,7 +26,7 @@ public class MockDataGenerator {
         mockMovies.add(new MediaResponse(
                 UUID.randomUUID(),
                 "The Shawshank Redemption",
-                "Two imprisoned men bond over a number of years...",
+                "Two imprisoned men bond over a number of years e ai foi indo ate que esquece mano, aqui eu já to enchendo linguiça ja, ole ole ole ole lalalala",
                 "Drama",
                 1994,
                 "Frank Darabont",

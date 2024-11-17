@@ -1,11 +1,14 @@
 package com.backend.cms.utils;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.backend.cms.R;
 import com.backend.cms.entities.MediaResponse;
@@ -15,7 +18,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private List<MediaResponse> movies = new ArrayList<>();
@@ -54,6 +56,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
+        private final CardView cardView;
         private final ImageView thumbnail;
         private final TextView title;
         private final TextView description;
@@ -63,6 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         MovieViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = (CardView) itemView;  // Since the root view is CardView
             thumbnail = itemView.findViewById(R.id.movie_thumbnail);
             title = itemView.findViewById(R.id.movie_title);
             description = itemView.findViewById(R.id.movie_description);
@@ -70,12 +74,26 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             year = itemView.findViewById(R.id.movie_year);
             duration = itemView.findViewById(R.id.movie_duration);
 
-            itemView.setOnClickListener(v -> {
+            cardView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
+                    effectOnClick(cardView);
                     clickListener.onMovieClick(movies.get(position));
                 }
             });
+        }
+
+        private void effectOnClick(CardView cardView) {
+            ColorStateList normalColor = cardView.getCardBackgroundColor();
+            float normalElevation = cardView.getCardElevation();
+
+            cardView.setCardBackgroundColor(ContextCompat.getColor(cardView.getContext(), R.color.click_color));
+            cardView.setCardElevation(3);
+
+            cardView.postDelayed(() -> {
+                cardView.setCardBackgroundColor(normalColor);
+                cardView.setCardElevation(normalElevation);
+            }, 200);
         }
 
         void bind(MediaResponse movie) {
