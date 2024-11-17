@@ -18,8 +18,13 @@ public class HomePageActivity extends BaseActivity {
             getSupportActionBar().hide();
         }
 
-        // Rest of your initialization code
         CardView uploadFileCard = findViewById(R.id.homepage_upload_card);
         setNavigationClickListener(uploadFileCard, Upload.class);
+
+        CardView libraryCard = findViewById(R.id.homepage_library);
+        setNavigationClickListener(libraryCard, Library.class);
+
+//        CardView users = findViewById(R.id.homepage_users);
+//        setNavigationClickListener(uploadFileCard, Library.class);
     }
 }

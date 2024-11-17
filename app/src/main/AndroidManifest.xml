@@ -51,7 +51,7 @@
         android:theme="@style/CustomLightTheme"
         android:usesCleartextTraffic="true">
 
-    <!-- Splash Screen: Application Entry Point -->
+        <!-- Splash Screen: Application Entry Point -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
@@ -77,8 +77,14 @@
             android:parentActivityName=".activities.HomePageActivity"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".activities.Library"
+            android:exported="false"
+            android:label="Library"
+            android:parentActivityName=".activities.HomePageActivity"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>
-
 

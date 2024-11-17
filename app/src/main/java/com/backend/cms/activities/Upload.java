@@ -8,26 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.backend.cms.R;
-import com.backend.cms.entities.Media;
-import com.backend.cms.services.UploadService;
-import com.backend.cms.utils.Mixins;
-import com.backend.cms.utils.MediaHandler;
-import com.backend.cms.services.RetrofitInterface;
-import com.backend.cms.utils.UploadValidator;
+import com.backend.cms.entities.MediaUploadRequest;
+import com.backend.cms.retrofitAPI.RetrofitClient;
+import com.backend.cms.upload.UploadService;
+import com.backend.cms.upload.MediaHandler;
+import com.backend.cms.upload.UploadValidator;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Upload extends BaseActivity {
 
@@ -38,6 +30,7 @@ public class Upload extends BaseActivity {
     private EditText movieYear;
     private EditText moviePublisher;
     private EditText movieDuration;
+    private RetrofitClient retrofitClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +53,12 @@ public class Upload extends BaseActivity {
         TextView submitButton = findViewById(R.id.button_submit);
 
         findViewById(R.id.add_files_card).setOnClickListener(view -> {
-            Mixins.animateCardClick(this, (CardView) view);
+            effectOnClick((CardView) view);
             mediaHandler.launchVideoSelector();
         });
 
         findViewById(R.id.card_thumbnail_upload).setOnClickListener(view -> {
-            Mixins.animateCardClick(this, (CardView) view);
+            effectOnClick((CardView) view);
             mediaHandler.launchThumbnailSelector();
         });
 
@@ -85,7 +78,7 @@ public class Upload extends BaseActivity {
 
 
     private void uploadMedia() {
-        Media media = new Media(
+        MediaUploadRequest mediaUploadRequest = new MediaUploadRequest(
                 movieTitle.getText().toString().trim(),
                 movieDescription.getText().toString().trim(),
                 movieGenre.getText().toString().trim(),
@@ -94,7 +87,7 @@ public class Upload extends BaseActivity {
                 movieDuration.getText().toString().trim().isEmpty() ? null : Integer.parseInt(movieDuration.getText().toString().trim())
         );
 
-        String validationError = UploadValidator.validation(media, mediaHandler.getVideoFile(), mediaHandler.getThumbnailFile());
+        String validationError = UploadValidator.validation(mediaUploadRequest, mediaHandler.getVideoFile(), mediaHandler.getThumbnailFile());
 
         if (validationError != null) {
             Toast.makeText(this, validationError, Toast.LENGTH_LONG).show();
@@ -102,18 +95,18 @@ public class Upload extends BaseActivity {
         }
 
         try {
-            uploadToServer(media);
+            uploadToServer(mediaUploadRequest);
         } catch (Exception e) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
 
-    private void uploadToServer(Media media) {
-        UploadService uploadService = new UploadService(getContentResolver());
+    private void uploadToServer(MediaUploadRequest mediaUploadRequest) {
+        UploadService uploadService = new UploadService(getContentResolver(), retrofitClient);
 
         Call<ResponseBody> call = uploadService.uploadMedia(
-                media,
+                mediaUploadRequest,
                 mediaHandler.getVideoFile(),
                 mediaHandler.getThumbnailFile(),
                 mediaHandler.getSelectedVideoUri(),

@@ -1,6 +1,6 @@
-package com.backend.cms.utils;
+package com.backend.cms.upload;
 
-import com.backend.cms.entities.Media;
+import com.backend.cms.entities.MediaUploadRequest;
 
 import java.io.File;
 import java.time.Year;
@@ -145,9 +145,9 @@ public class UploadValidator {
         return null;
     }
 
-    public static String validation(Media media, File videoFile, File thumbnailFile) {
+    public static String validation(MediaUploadRequest mediaUploadRequest, File videoFile, File thumbnailFile) {
         String[] validations = {
-                validateFields(media.getTitle(), media.getDescription(), media.getGenre(), media.getYear(), media.getPublisher(), media.getDuration()),
+                validateFields(mediaUploadRequest.getTitle(), mediaUploadRequest.getDescription(), mediaUploadRequest.getGenre(), mediaUploadRequest.getYear(), mediaUploadRequest.getPublisher(), mediaUploadRequest.getDuration()),
                 validateFiles(videoFile, thumbnailFile)};
 
         for (String error : validations)

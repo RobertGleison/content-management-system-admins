@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import androidx.cardview.widget.CardView;
 import android.content.Intent;
 import com.backend.cms.R;
+import com.backend.cms.entities.MediaResponse;
 
 // Implement reusable functions through the activities that extends BaseActivity
 public abstract class BaseActivity extends AppCompatActivity {
@@ -32,4 +33,5 @@ public abstract class BaseActivity extends AppCompatActivity {
             cardView.setCardElevation(normalElevation);
         }, 200);
     }
+
 }

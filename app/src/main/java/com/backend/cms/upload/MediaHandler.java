@@ -1,4 +1,4 @@
-package com.backend.cms.utils;
+package com.backend.cms.upload;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
