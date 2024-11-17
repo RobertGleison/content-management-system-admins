@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private List<MediaResponse> movies = new ArrayList<>();
     private final OnMovieClickListener clickListener;
@@ -98,12 +99,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         .load(R.drawable.placeholder_thumbnail)
                         .into(thumbnail);
             }
-
-            // Optional: Add upload timestamp
-            // TextView uploadTime = itemView.findViewById(R.id.upload_time);
-            // if (movie.getUploadTimestamp() != null) {
-            //     uploadTime.setText(formatDateTime(movie.getUploadTimestamp()));
-            // }
         }
 
         private String formatDateTime(LocalDateTime dateTime) {
