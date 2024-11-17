@@ -2,7 +2,7 @@ package com.backend.cms.retrofitAPI;
 
 public class RetrofitNetworkConfig {
     // Connectio URL with backend server
-    public static final String BASE_URL = "http://192.168.1.11:8080/";
+    public static final String BASE_URL = "http://10.0.2.2:8080/";
 
     // Timeouts in seconds
     public static final int CONNECT_TIMEOUT = 60;

@@ -56,16 +56,16 @@ public class Library extends BaseActivity implements MovieAdapter.OnMovieClickLi
         loadingIndicator = findViewById(R.id.loading_indicator);
     }
 
-    private void loadMovies() {
-        showLoading(true);
-        new android.os.Handler().postDelayed(() -> {
-            // Create mock data
-            List<MediaResponse> mockMovies = MockDataGenerator.createMockData();
-
-            // Update UI
-            showLoading(false);
-            adapter.setMovies(mockMovies);
-        }, 1000);
+//    private void loadMovies() {
+////        showLoading(true);
+////        new android.os.Handler().postDelayed(() -> {
+//            // Create mock data
+////            List<MediaResponse> mockMovies = MockDataGenerator.createMockData();
+//
+//            // Update UI
+////            showLoading(false);
+////            adapter.setMovies(mockMovies);
+////        }, 1000);
 //        RetrofitClient.getInstance()
 //                .getApi()
 //                .getAllMedia()
@@ -85,7 +85,37 @@ public class Library extends BaseActivity implements MovieAdapter.OnMovieClickLi
 //                        showLoading(false);
 //                        showError("Error: " + t.getMessage());
 //                    }
-//                });
+//                });}
+
+    private void loadMovies() {
+        showLoading(true);
+        RetrofitClient.getInstance()
+                .getApi()
+                .getAllMedia()
+                .enqueue(new Callback<List<MediaResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<MediaResponse>> call, Response<List<MediaResponse>> response) {
+                        showLoading(false);
+                        if (response.isSuccessful() && response.body() != null) {
+                            adapter.setMovies(response.body());
+                        } else {
+                            try {
+                                String errorBody = response.errorBody() != null ?
+                                        response.errorBody().string() : "Unknown error";
+                                showError("Failed to load movies: " + errorBody);
+                            } catch (Exception e) {
+                                showError("Failed to load movies: " + e.getMessage());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<MediaResponse>> call, Throwable t) {
+                        showLoading(false);
+                        showError("Network Error: " + t.getMessage());
+                        t.printStackTrace(); // Print stack trace for debugging
+                    }
+                });
     }
 
 
