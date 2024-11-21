@@ -2,6 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Define the colors first -->
     <style name="CustomLightTheme" parent="Theme.Material3.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/actionbar_blue</item>
         <item name="colorPrimaryVariant">@color/actionbar_blue</item>
@@ -17,9 +20,6 @@
         <item name="android:windowLightStatusBar">false</item>
 
         <!-- Action bar styling -->
-        <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">false</item>
-        <item name="actionBarStyle">@style/CustomActionBar</item>
 
         <!-- General theme colors -->
         <item name="android:windowBackground">@color/white</item>
@@ -46,6 +46,64 @@
         <item name="android:backgroundDimAmount">0.5</item>
     </style>
 
+    <style name="Theme.TestingNetflix" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.TestingNetflix.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="colorPrimary">@color/actionbar_blue</item>
+        <item name="colorPrimaryVariant">@color/actionbar_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/actionbar_blue</item>
+        <item name="colorSecondaryVariant">@color/actionbar_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/actionbar_blue</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.TestingNetflix.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.TestingNetflix.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.BackgroundImageStyle" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Netflix" parent="Theme.Material3.Dark.NoActionBar">
+        <!---<item name="colorPrimary">@color/white</item> -->
+        <!-- <item name="colorOnPrimary">@color/almost_white</item> -->
+
+        <item name="colorPrimary">@color/actionbar_blue</item>
+        <item name="colorPrimaryVariant">@color/actionbar_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/actionbar_blue</item>
+        <item name="colorSecondaryVariant">@color/actionbar_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/actionbar_blue</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
 
 
 </resources>

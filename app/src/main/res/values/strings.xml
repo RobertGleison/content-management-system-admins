@@ -2,4 +2,16 @@
     <string name="app_name">Netflix CMS</string>
     <string name="title_activity_library">Library</string>
     <string name="title_activity_main">MainActivity</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="log_in_now">I already have an account</string>
+    <string name="register_now">I don\'t have an account yet</string>
+    <string name="logout">Logout</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="forgot_password">Forgot my password</string>
+    <string name="welcome_to_netflixplus">Welcome to NetflixPlus</string>
+    <string name="background_image_description">background image</string>
 </resources>

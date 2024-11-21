@@ -40,13 +40,13 @@
             <GridLayout
                 android:id="@+id/mainGrid"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
+                android:layout_height="280dp"
                 android:layout_weight="6"
                 android:alignmentMode="alignMargins"
                 android:columnCount="2"
                 android:columnOrderPreserved="false"
                 android:padding="15dp"
-                android:rowCount="3">
+                android:rowCount="2">
 
                 <!-- Row 1 Column 1 -->
                 <androidx.cardview.widget.CardView
@@ -58,9 +58,9 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="16dp"
-                    app:cardBackgroundColor="@color/white"
                     android:clickable="true"
                     android:focusable="true"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="8dp">
 
@@ -212,8 +212,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="Beta"
                             android:gravity="center"
+                            android:text="Beta"
                             android:textAlignment="center"
                             android:textColor="@color/red"
                             android:textSize="15sp"
@@ -223,16 +223,19 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp" />
 
             </GridLayout>
+
+            <Button
+                android:id="@+id/logout_button"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/logout"
+                android:layout_gravity="center"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
 
         </LinearLayout>
 
