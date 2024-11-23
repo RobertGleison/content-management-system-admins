@@ -3,14 +3,17 @@ package com.backend.cms.activities;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.backend.cms.R;
 import com.backend.cms.entities.User;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.Objects;
 
 
 // Activity responsible for User Screen
@@ -29,6 +32,8 @@ public class UsersActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.user_email);
         EditText password = findViewById(R.id.user_password);
         Button submit = findViewById(R.id.user_submit);
+        TextView currentuser = findViewById(R.id.current_user_email);
+        currentuser.setText(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
 
         // Set up submit button click listener
         submit.setOnClickListener(v -> {

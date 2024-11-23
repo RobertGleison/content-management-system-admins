@@ -232,13 +232,16 @@
 
             <Button
                 android:id="@+id/logout_button"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:text="@string/logout"
-                android:layout_gravity="center"
-                android:layout_marginTop="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
 
         </LinearLayout>
 
