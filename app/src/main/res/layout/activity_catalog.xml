@@ -31,7 +31,6 @@
         app:queryBackground="@null"
         app:iconifiedByDefault="false"/>
 
-
     <Spinner
         android:id="@+id/genreSpinner"
         android:layout_width="0dp"
