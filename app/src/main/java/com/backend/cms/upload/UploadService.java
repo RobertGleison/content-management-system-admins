@@ -2,161 +2,90 @@ package com.backend.cms.upload;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.util.Log;
 
 import com.backend.cms.retrofitAPI.RetrofitClient;
 import com.backend.cms.retrofitAPI.RetrofitInterface;
 import com.backend.cms.entities.MediaUploadRequest;
 
 import java.io.File;
-import java.io.IOException;
-import okio.Buffer;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+// Service class responsible for handling media upload operations to the server using Retrofit
 public class UploadService {
-    private static final String TAG = "UploadService";
     private final RetrofitInterface api;
     private final ContentResolver contentResolver;
+
 
     public UploadService(ContentResolver contentResolver, RetrofitClient retrofitClient) {
         this.contentResolver = contentResolver;
         this.api = retrofitClient.getApi();
     }
 
+
+    /**
+     * Uploads media content (video and thumbnail) along with metadata to the server.
+     * Creates a multipart request containing both files and metadata fields.
+     * @param mediaUploadRequest Object containing metadata for the upload (title, description, etc.)
+     * @param videoFile The video file to be uploaded
+     * @param thumbnailFile The thumbnail image file for the video
+     * @param videoUri URI reference to the video file in the device
+     * @param imageUri URI reference to the thumbnail image in the device
+     * @return A Call object representing the upload request
+     */
     public Call<ResponseBody> uploadMedia(MediaUploadRequest mediaUploadRequest,
                                           File videoFile,
                                           File thumbnailFile,
                                           Uri videoUri,
                                           Uri imageUri) {
-        Log.d(TAG, "=== Starting Upload Request ===");
-        logRequestParameters(mediaUploadRequest, videoFile, thumbnailFile);
+        MultipartBody.Part videoPart = prepareFilePart("videoFile", videoFile, videoUri);
+        MultipartBody.Part thumbnailPart = prepareFilePart("thumbnail", thumbnailFile, imageUri);
 
-        try {
-            // Prepare file parts first
-            MultipartBody.Part videoPart = prepareFilePart("videoFile", videoFile, videoUri);
-            MultipartBody.Part thumbnailPart = prepareFilePart("thumbnail", thumbnailFile, imageUri);
+        RequestBody titleBody = createPartFromString(mediaUploadRequest.getTitle());
+        RequestBody descriptionBody = createPartFromString(mediaUploadRequest.getDescription());
+        RequestBody genreBody = createPartFromString(mediaUploadRequest.getGenre());
+        RequestBody yearBody = createPartFromString(String.valueOf(mediaUploadRequest.getYear()));
+        RequestBody publisherBody = createPartFromString(mediaUploadRequest.getPublisher());
+        RequestBody durationBody = createPartFromString(String.valueOf(mediaUploadRequest.getDuration()));
 
-            // Prepare text parts with proper null checks
-            RequestBody titleBody = createPartFromString(mediaUploadRequest.getTitle());
-            RequestBody descriptionBody = createPartFromString(mediaUploadRequest.getDescription());
-            RequestBody genreBody = createPartFromString(mediaUploadRequest.getGenre());
-            RequestBody yearBody = createPartFromString(
-                    mediaUploadRequest.getYear() != null ?
-                            String.valueOf(mediaUploadRequest.getYear()) : ""
-            );
-            RequestBody publisherBody = createPartFromString(mediaUploadRequest.getPublisher());
-            RequestBody durationBody = createPartFromString(
-                    mediaUploadRequest.getDuration() != null ?
-                            String.valueOf(mediaUploadRequest.getDuration()) : ""
-            );
-
-            // Log the complete request
-            logCompleteRequest(videoPart, thumbnailPart, titleBody, descriptionBody,
-                    genreBody, yearBody, publisherBody, durationBody);
-
-            return api.uploadVideo(
-                    videoPart,
-                    thumbnailPart,
-                    titleBody,
-                    descriptionBody,
-                    genreBody,
-                    yearBody,
-                    publisherBody,
-                    durationBody
-            );
-        } catch (Exception e) {
-            Log.e(TAG, "Error preparing upload request", e);
-            throw e;
-        }
+        return api.uploadVideo(
+                videoPart,
+                thumbnailPart,
+                titleBody,
+                descriptionBody,
+                genreBody,
+                yearBody,
+                publisherBody,
+                durationBody
+        );
     }
 
+
+    /**
+     * Creates a RequestBody from a string value for use in multipart form data.
+     * @param value The string value to convert into a RequestBody
+     * @return RequestBody instance containing the string value with plain text media type
+     */
     private RequestBody createPartFromString(String value) {
-        String safeValue = value != null ? value : "";
-        return RequestBody.create(
-                MediaType.parse("text/plain"),
-                safeValue
-        );
+        return RequestBody.create(MediaType.parse("text/plain"), value);
     }
 
+
+    /**
+     * Prepares a file for multipart form data upload by creating a MultipartBody.Part.
+     * Uses ContentResolver to determine the correct MIME type of the file.
+     * @param partName The name of the form part (parameter name expected by the server)
+     * @param file The file to be uploaded
+     * @param uri URI reference to the file in the device
+     * @return MultipartBody.Part instance ready for upload
+     */
     private MultipartBody.Part prepareFilePart(String partName, File file, Uri uri) {
-        if (file == null || !file.exists()) {
-            Log.e(TAG, "File is null or doesn't exist: " + partName);
-            throw new IllegalArgumentException("Invalid file for: " + partName);
-        }
-
-        String mimeType = contentResolver.getType(uri);
-        if (mimeType == null) {
-            mimeType = partName.equals("videoFile") ? "video/mp4" : "image/jpeg";
-            Log.w(TAG, "Using default mime type for " + partName + ": " + mimeType);
-        }
-
-        RequestBody requestFile = RequestBody.create(
-                MediaType.parse(mimeType),
-                file
-        );
-
-        MultipartBody.Part part = MultipartBody.Part.createFormData(
-                partName,
-                file.getName(),
-                requestFile
-        );
-
-        logFilePart(partName, file, mimeType, part);
-        return part;
-    }
-
-    private void logRequestParameters(MediaUploadRequest request, File videoFile, File thumbnailFile) {
-        Log.d(TAG, "Request Parameters:");
-        Log.d(TAG, "Title: " + request.getTitle());
-        Log.d(TAG, "Description: " + request.getDescription());
-        Log.d(TAG, "Genre: " + request.getGenre());
-        Log.d(TAG, "Year: " + request.getYear());
-        Log.d(TAG, "Publisher: " + request.getPublisher());
-        Log.d(TAG, "Duration: " + request.getDuration());
-
-        if (videoFile != null) {
-            Log.d(TAG, String.format("Video: %s (%.2f MB)",
-                    videoFile.getName(),
-                    videoFile.length() / (1024.0 * 1024.0)));
-        }
-
-        if (thumbnailFile != null) {
-            Log.d(TAG, String.format("Thumbnail: %s (%.2f MB)",
-                    thumbnailFile.getName(),
-                    thumbnailFile.length() / (1024.0 * 1024.0)));
-        }
-    }
-
-    private void logFilePart(String partName, File file, String mimeType, MultipartBody.Part part) {
-        Log.d(TAG, String.format("File Part: %s", partName));
-        Log.d(TAG, String.format("- File name: %s", file.getName()));
-        Log.d(TAG, String.format("- File size: %.2f MB", file.length() / (1024.0 * 1024.0)));
-        Log.d(TAG, String.format("- MIME type: %s", mimeType));
-        Log.d(TAG, String.format("- Headers: %s", part.headers()));
-    }
-
-    private void logCompleteRequest(MultipartBody.Part videoPart, MultipartBody.Part thumbnailPart,
-                                    RequestBody... textParts) {
-        Log.d(TAG, "=== Complete Multipart Request ===");
-
-        Log.d(TAG, "Files:");
-        if (videoPart != null) Log.d(TAG, "- Video: " + videoPart.headers());
-        if (thumbnailPart != null) Log.d(TAG, "- Thumbnail: " + thumbnailPart.headers());
-
-        Log.d(TAG, "Text Parts:");
-        String[] names = {"title", "description", "genre", "year", "publisher", "duration"};
-        for (int i = 0; i < textParts.length; i++) {
-            try {
-                Buffer buffer = new Buffer();
-                textParts[i].writeTo(buffer);
-                Log.d(TAG, String.format("- %s: %s", names[i], buffer.readUtf8()));
-            } catch (IOException e) {
-                Log.e(TAG, "Error reading text part: " + names[i], e);
-            }
-        }
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse(contentResolver.getType(uri)),
+                file);
+        return MultipartBody.Part.createFormData(partName, file.getName(), requestBody);
     }
 }
