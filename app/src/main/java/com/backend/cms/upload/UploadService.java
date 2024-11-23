@@ -14,6 +14,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+// Service class responsible for handling media upload operations to the server using Retrofit
 public class UploadService {
     private final RetrofitInterface api;
     private final ContentResolver contentResolver;
@@ -24,7 +25,22 @@ public class UploadService {
         this.api = retrofitClient.getApi();
     }
 
-    public Call<ResponseBody> uploadMedia(MediaUploadRequest mediaUploadRequest, File videoFile, File thumbnailFile, Uri videoUri, Uri imageUri) {
+
+    /**
+     * Uploads media content (video and thumbnail) along with metadata to the server.
+     * Creates a multipart request containing both files and metadata fields.
+     * @param mediaUploadRequest Object containing metadata for the upload (title, description, etc.)
+     * @param videoFile The video file to be uploaded
+     * @param thumbnailFile The thumbnail image file for the video
+     * @param videoUri URI reference to the video file in the device
+     * @param imageUri URI reference to the thumbnail image in the device
+     * @return A Call object representing the upload request
+     */
+    public Call<ResponseBody> uploadMedia(MediaUploadRequest mediaUploadRequest,
+                                          File videoFile,
+                                          File thumbnailFile,
+                                          Uri videoUri,
+                                          Uri imageUri) {
         MultipartBody.Part videoPart = prepareFilePart("videoFile", videoFile, videoUri);
         MultipartBody.Part thumbnailPart = prepareFilePart("thumbnail", thumbnailFile, imageUri);
 
@@ -47,16 +63,29 @@ public class UploadService {
         );
     }
 
+
+    /**
+     * Creates a RequestBody from a string value for use in multipart form data.
+     * @param value The string value to convert into a RequestBody
+     * @return RequestBody instance containing the string value with plain text media type
+     */
     private RequestBody createPartFromString(String value) {
         return RequestBody.create(MediaType.parse("text/plain"), value);
     }
 
 
+    /**
+     * Prepares a file for multipart form data upload by creating a MultipartBody.Part.
+     * Uses ContentResolver to determine the correct MIME type of the file.
+     * @param partName The name of the form part (parameter name expected by the server)
+     * @param file The file to be uploaded
+     * @param uri URI reference to the file in the device
+     * @return MultipartBody.Part instance ready for upload
+     */
     private MultipartBody.Part prepareFilePart(String partName, File file, Uri uri) {
         RequestBody requestBody = RequestBody.create(
                 MediaType.parse(contentResolver.getType(uri)),
-                file
-        );
+                file);
         return MultipartBody.Part.createFormData(partName, file.getName(), requestBody);
     }
 }

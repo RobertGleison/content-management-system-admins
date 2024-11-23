@@ -1,7 +1,6 @@
 package com.backend.cms.retrofitAPI;
 
 import com.backend.cms.entities.MediaResponse;
-import com.backend.cms.entities.MediaUploadRequest;
 import com.backend.cms.entities.User;
 
 import java.util.List;
@@ -22,6 +21,8 @@ import retrofit2.http.Path;
 import retrofit2.http.Headers;
 
 public interface RetrofitInterface {
+
+
     @Multipart
     @POST("media/upload")
     @Headers("Accept: application/json")
@@ -36,42 +37,46 @@ public interface RetrofitInterface {
             @Part("duration") RequestBody duration
     );
 
+
+
     @GET("media")
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json"
-    })
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
     Call<List<MediaResponse>> getAllMedia();
 
+
+
     @GET("media/genre/{genre}")
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json"
-    })
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
     Call<List<MediaResponse>> getMediaByGenre(@Path("genre") String genre);
 
+
+
     @GET("media/title/{title}")
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json"
-    })
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
     Call<List<MediaResponse>> getMediaByTitle(@Path("title") String title);
 
+
+
     @GET("media/{id}")
-    @Headers({
-            "Accept: application/json",
-            "Content-Type: application/json"
-    })
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
     Call<MediaResponse> getMediaById(@Path("id") UUID id);
+
+
 
     @DELETE("media/title/{title}")
     Call<Void> deleteMediaByTitle(@Path("title") String title);
 
+
+
     @DELETE("media/{id}")
     Call<Void> deleteById(@Path("id") UUID id);
 
+
+
     @GET("users")
     Call<List<User>> getUsers();
+
+
 
     @POST("users")
     Call<User> createUser(@Body User user);

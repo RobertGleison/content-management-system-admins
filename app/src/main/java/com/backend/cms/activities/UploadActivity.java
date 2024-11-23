@@ -13,6 +13,7 @@ import com.backend.cms.retrofitAPI.RetrofitClient;
 import com.backend.cms.upload.UploadService;
 import com.backend.cms.upload.MediaHandler;
 import com.backend.cms.upload.UploadValidator;
+import com.backend.cms.utils.Mixins;
 
 import java.io.IOException;
 
@@ -60,12 +61,12 @@ public class UploadActivity extends BaseActivity {
         TextView submitButton = findViewById(R.id.button_submit);
 
         findViewById(R.id.add_files_card).setOnClickListener(view -> {
-            effectOnClick((CardView) view);
+            Mixins.effectOnClick(this, (CardView) view);
             mediaHandler.launchVideoSelector();
         });
 
         findViewById(R.id.card_thumbnail_upload).setOnClickListener(view -> {
-            effectOnClick((CardView) view);
+            Mixins.effectOnClick(this, (CardView) view);
             mediaHandler.launchThumbnailSelector();
         });
 

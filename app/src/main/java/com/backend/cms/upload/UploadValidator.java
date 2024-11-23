@@ -29,12 +29,14 @@ public class UploadValidator {
         return null;
     }
 
+
     private static String validateDescription(String description) {
         if (description == null || description.trim().isEmpty()) return "Description is required";
         if (description.length() > MAX_DESCRIPTION_LENGTH)
             return "Description cannot exceed " + MAX_DESCRIPTION_LENGTH + " characters";
         return null;
     }
+
 
     private static String validateGenre(String genre) {
         if (genre == null || genre.trim().isEmpty()) return "Genre is required";
@@ -43,12 +45,14 @@ public class UploadValidator {
         return null;
     }
 
+
     private static String validateYear(Integer year) {
         if (year == null) return "Year is required";
         if (year < MIN_YEAR) return "Year must be between " + MIN_YEAR + " and " + MAX_YEAR;
         if (year > MAX_YEAR) return "Year must be less then current year";
         return null;
     }
+
 
     private static String validatePublisher(String publisher) {
         if (publisher == null || publisher.trim().isEmpty()) return "Publisher is required";
@@ -57,6 +61,7 @@ public class UploadValidator {
         return null;
     }
 
+
     private static String validateDuration(Integer duration) {
         if (duration == null) return "Duration is required";
         if (duration <= 0) return "Duration must be greater than 0";
@@ -64,6 +69,7 @@ public class UploadValidator {
             return "Duration cannot exceed " + MAX_MINUTES_DURATION + " minutes";
         return null;
     }
+
 
     private static String validateVideo(File videoFile) {
         if (videoFile == null) return "Video file is required";
@@ -86,6 +92,7 @@ public class UploadValidator {
             return "Invalid video format. Use: " + String.join(", ", VALID_VIDEO_EXTENSIONS);
         return null;
     }
+
 
     private static String validateThumbnail(File imageFile) {
         if (imageFile == null) return "Thumbnail is required";
@@ -110,6 +117,7 @@ public class UploadValidator {
     }
 
 
+    // Validate Files
     private static String validateFiles(File videoFile, File thumbnailFile) {
         String[] validations = {
                 validateVideo(videoFile),
@@ -123,6 +131,8 @@ public class UploadValidator {
 
     }
 
+
+    // Validate Text Fields
     private static String validateFields(String title,
                                  String description,
                                  String genre,
@@ -145,6 +155,7 @@ public class UploadValidator {
         return null;
     }
 
+    // Validate All Fields, return one error per time
     public static String validation(MediaUploadRequest mediaUploadRequest, File videoFile, File thumbnailFile) {
         String[] validations = {
                 validateFields(mediaUploadRequest.getTitle(), mediaUploadRequest.getDescription(), mediaUploadRequest.getGenre(), mediaUploadRequest.getYear(), mediaUploadRequest.getPublisher(), mediaUploadRequest.getDuration()),

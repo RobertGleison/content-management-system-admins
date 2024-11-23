@@ -21,6 +21,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 
+/**
+ * Handles media file selection and processing for video uploads and thumbnails.
+ * This class manages the UI interactions, file selection, and temporary file creation
+ * for both video and thumbnail image files in the CMS upload process.
+ */
 public class MediaHandler {
 
     private final AppCompatActivity activity;
@@ -35,12 +40,21 @@ public class MediaHandler {
     private Uri selectedVideoUri;
     private Uri selectedImageUri;
 
+
+    /**
+     * Constructs a new MediaHandler instance and initializes media selectors.
+     * @param activity The AppCompatActivity context used for UI operations and content resolution
+     */
     public MediaHandler(AppCompatActivity activity) {
         this.activity = activity;
         this.contentResolver = activity.getContentResolver();
         initializeSelectors();
     }
 
+    /**
+     * Initializes the activity result launchers for video and thumbnail selection.
+     * Sets up handlers for processing selected media files.
+     */
     private void initializeSelectors() {
         videoSelector = activity.registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
@@ -53,14 +67,28 @@ public class MediaHandler {
         );
     }
 
+
+    /**
+     * Launches the video file picker with video/* MIME type filter.
+     */
     public void launchVideoSelector() {
         videoSelector.launch("video/*");
     }
 
+
+    /**
+     * Launches the image file picker with image/* MIME type filter.
+     */
     public void launchThumbnailSelector() {
         thumbnailSelector.launch("image/*");
     }
 
+
+    /**
+     * Handles the video selection result from the file picker.
+     * Creates a temporary file and updates the UI accordingly.
+     * @param uri The URI of the selected video file
+     */
     private void handleVideoSelection(Uri uri) {
         if (uri != null) {
             selectedVideoUri = uri;
@@ -75,6 +103,12 @@ public class MediaHandler {
         }
     }
 
+
+    /**
+     * Handles the thumbnail selection result from the file picker.
+     * Creates a temporary file and updates the UI accordingly.
+     * @param uri The URI of the selected thumbnail image
+     */
     private void handleThumbnailSelection(Uri uri) {
         if (uri != null) {
             selectedImageUri = uri;
@@ -89,6 +123,16 @@ public class MediaHandler {
         }
     }
 
+
+    /**
+     * Creates a temporary file from a content URI.
+     * Copies the content from the URI to a new file in the app's cache directory.
+     *
+     * @param uri The source URI of the content
+     * @param fileName The name to use for the temporary file
+     * @return The created temporary File
+     * @throws IOException If there's an error reading from the URI or writing to the file
+     */
     private File createTempFileFromUri(Uri uri, String fileName) throws IOException {
         InputStream inputStream = contentResolver.openInputStream(uri);
         if (inputStream == null) {
@@ -112,6 +156,11 @@ public class MediaHandler {
         return outputFile;
     }
 
+
+    /**
+     * Updates the UI elements for video selection.
+     * @param fileName The name of the selected video file to display
+     */
     private void updateVideoUI(String fileName) {
         TextView nameView = activity.findViewById(R.id.text_video_name);
         ImageView iconView = activity.findViewById(R.id.image_video_upload);
@@ -121,6 +170,11 @@ public class MediaHandler {
         showToast("Video selected: " + fileName);
     }
 
+
+    /**
+     * Updates the UI elements for thumbnail selection.
+     * @param fileName The name of the selected thumbnail file to display
+     */
     private void updateThumbnailUI(String fileName) {
         TextView nameView = activity.findViewById(R.id.text_thumbnail_name);
         ImageView iconView = activity.findViewById(R.id.image_thumbnail_upload);
@@ -130,6 +184,13 @@ public class MediaHandler {
         showToast("Thumbnail selected: " + fileName);
     }
 
+
+    /**
+     * Extracts the file name from a content URI.
+     * Attempts to get the display name from the content provider, falls back to path parsing if necessary.
+     * @param uri The URI to extract the file name from
+     * @return The extracted file name
+     */
     private String getFileNameFromUri(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -152,24 +213,46 @@ public class MediaHandler {
         return result;
     }
 
+
+    /**
+     * Resets the video selection state and clears associated files.
+     */
     private void resetVideoSelection() {
         selectedVideoUri = null;
         videoFile = null;
     }
 
+
+    /**
+     * Resets the thumbnail selection state and clears associated files.
+     */
     private void resetThumbnailSelection() {
         selectedImageUri = null;
         thumbnailFile = null;
     }
 
+
+    /**
+     * Displays an error message using a Toast.
+     * @param message The error message to display
+     */
     private void showError(String message) {
         showToast(message);
     }
 
+
+    /**
+     * Shows a Toast message.
+     * @param message The message to display
+     */
     private void showToast(String message) {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
     }
 
+
+    /**
+     * Clears all selected media and resets the UI to its initial state.
+     */
     public void clearMedia() {
         resetVideoSelection();
         resetThumbnailSelection();
@@ -190,16 +273,18 @@ public class MediaHandler {
         return videoFile;
     }
 
+
     public File getThumbnailFile() {
         return thumbnailFile;
     }
+
 
     public Uri getSelectedVideoUri() {
         return selectedVideoUri;
     }
 
+
     public Uri getSelectedImageUri() {
         return selectedImageUri;
     }
-
 }

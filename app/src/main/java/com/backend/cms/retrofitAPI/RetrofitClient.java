@@ -14,14 +14,36 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * Singleton class that manages the Retrofit instance for making API calls.
+ * Configures and provides access to a Retrofit client with custom settings for:
+ * - LocalDateTime serialization/deserialization
+ * - Network timeouts
+ * - Base URL configuration
+ * - JSON conversion
+ */
 public class RetrofitClient {
     private static RetrofitClient instance = null;
     private static RetrofitInterface api;
 
+    /**
+     * Private constructor that initializes the Retrofit instance with custom configurations.
+     * Sets up:
+     * - Custom TypeAdapter for LocalDateTime handling
+     * - OkHttpClient with timeout configurations
+     * - Gson converter with custom type adapters
+     * - Retrofit instance with base URL and configurations
+     */
     private RetrofitClient() {
-
         // Create custom TypeAdapter for LocalDateTime
         TypeAdapter<LocalDateTime> localDateTimeAdapter = new TypeAdapter<LocalDateTime>() {
+            /**
+             * Writes LocalDateTime to JSON format.
+             * @param out JSON writer
+             * @param value LocalDateTime value to write
+             * @throws IOException if writing fails
+             */
             @Override
             public void write(JsonWriter out, LocalDateTime value) throws IOException {
                 if (value == null) {
@@ -31,6 +53,13 @@ public class RetrofitClient {
                 }
             }
 
+
+            /**
+             * Reads LocalDateTime from JSON format.
+             * @param in JSON reader
+             * @return parsed LocalDateTime or null if parsing fails
+             * @throws IOException if reading fails
+             */
             @Override
             public LocalDateTime read(JsonReader in) throws IOException {
                 if (in.peek() == com.google.gson.stream.JsonToken.NULL) {
@@ -47,19 +76,19 @@ public class RetrofitClient {
             }
         };
 
-        // Create OkHttpClient
+        // Create OkHttpClient with timeout configurations
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(RetrofitNetworkConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(RetrofitNetworkConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(RetrofitNetworkConfig.READ_TIMEOUT, TimeUnit.SECONDS)
                 .build();
 
-        // Create Gson with custom TypeAdapter
+        // Create Gson with custom TypeAdapter for LocalDateTime
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
                 .create();
 
-        // Create Retrofit instance
+        // Create and configure Retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(RetrofitNetworkConfig.BASE_URL)
                 .client(client)
@@ -69,11 +98,22 @@ public class RetrofitClient {
         api = retrofit.create(RetrofitInterface.class);
     }
 
+
+    /**
+     * Gets the singleton instance of RetrofitClient.
+     * Creates a new instance if one doesn't exist.
+     * @return The singleton instance of RetrofitClient
+     */
     public static synchronized RetrofitClient getInstance() {
         if (instance == null) instance = new RetrofitClient();
         return instance;
     }
 
+
+    /**
+     * Gets the configured Retrofit interface for making API calls.
+     * @return The RetrofitInterface instance containing API endpoint definitions
+     */
     public RetrofitInterface getApi() {
         return api;
     }
