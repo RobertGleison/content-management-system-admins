@@ -53,6 +53,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.admin)
+    implementation(libs.firebase.database)
     implementation(libs.core.splashscreen)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)

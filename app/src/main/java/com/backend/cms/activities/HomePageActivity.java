@@ -55,7 +55,7 @@ public class HomePageActivity extends BaseActivity {
             }
         });
 
-//        CardView users = findViewById(R.id.homepage_users);
-//        setNavigationClickListener(uploadFileCard, Library.class);
+        CardView users = findViewById(R.id.homepage_users);
+        setNavigationClickListener(users, UsersActivity.class);
     }
 }
