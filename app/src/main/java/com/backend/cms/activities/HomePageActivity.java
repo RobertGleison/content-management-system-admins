@@ -45,6 +45,9 @@ public class HomePageActivity extends BaseActivity {
 
         CardView users = findViewById(R.id.homepage_users);
         setNavigationClickListener(users, UsersActivity.class);
+
+//        CardView settings = findViewById(R.id.homepage_settings);
+//        setNavigationClickListener(settings, SettingsActivity.class);
     }
 
 

@@ -5,7 +5,6 @@ import static com.backend.cms.utils.Mixins.showQuickToast;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +34,7 @@ public class CatalogActivity extends BaseActivity implements OnMovieClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_library_card);
+        setContentView(R.layout.activity_catalog);
 
         setupViews();
         loadMovies();

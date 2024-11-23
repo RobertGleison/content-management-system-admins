@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.material.v1110)
     implementation(libs.firebase.database)
     implementation(libs.core.splashscreen)
     implementation(libs.lifecycle.runtime.ktx)

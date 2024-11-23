@@ -18,9 +18,10 @@
         android:layout_height="48dp"
         android:layout_margin="8dp"
         android:iconifiedByDefault="false"
-        android:queryHint="Search for a movie"
+        android:queryHint="@string/search_movie_hint"
         android:background="@android:drawable/editbox_background"
         android:padding="8dp"
+        android:contentDescription="@string/search_movies"
         style="@android:style/Widget.Material.SearchView"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +34,7 @@
         android:layout_margin="8dp"
         android:padding="12dp"
         android:spinnerMode="dropdown"
+        android:contentDescription="@string/genre_spinner"
         style="@android:style/Widget.Material.Spinner"
         android:popupBackground="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,6 +45,7 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/refresh_content"
         app:layout_constraintTop_toBottomOf="@id/genreSpinner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:contentDescription="@string/movie_list"
             android:padding="10dp"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -62,6 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:contentDescription="@string/loading_indicator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

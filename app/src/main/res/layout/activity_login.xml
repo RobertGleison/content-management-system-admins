@@ -24,7 +24,6 @@
         android:layout_marginStart="40dp"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-
         app:boxStrokeErrorColor="@color/red"
         app:errorTextColor="@color/red">
 
@@ -32,6 +31,7 @@
             android:id="@+id/email"
             android:inputType="textEmailAddress"
             android:hint="@string/email"
+            android:contentDescription="@string/email_input_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -44,7 +44,6 @@
         android:layout_marginStart="40dp"
         app:endIconMode="password_toggle"
         android:layout_marginTop="10dp"
-
         app:boxStrokeErrorColor="@color/red"
         app:errorTextColor="@color/red">
 
@@ -52,6 +51,7 @@
             android:id="@+id/password"
             android:inputType="textPassword"
             android:hint="@string/password"
+            android:contentDescription="@string/password_input_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +70,8 @@
         android:visibility="gone"
         android:layout_marginTop="30sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/progress_indicator"/>
 
     <Button
         android:id="@+id/login_button"
@@ -78,8 +79,7 @@
         android:textColor="@color/white"
         android:layout_marginTop="30sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/login_button_desc" />
 
 </LinearLayout>

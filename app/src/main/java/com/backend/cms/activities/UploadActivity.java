@@ -5,7 +5,7 @@ import static com.backend.cms.utils.Mixins.showQuickToast;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
@@ -42,7 +42,7 @@ public class UploadActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload_card);
+        setContentView(R.layout.activity_upload);
 
         mediaHandler = new MediaHandler(this);
         initializeViews();

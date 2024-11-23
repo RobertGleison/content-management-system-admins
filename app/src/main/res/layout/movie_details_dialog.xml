@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
-                android:contentDescription="Movie thumbnail"/>
+                android:contentDescription="@string/movie_thumbnail_desc"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,7 +36,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/movie_title_desc"/>
 
                 <TextView
                     android:id="@+id/detail_genre"
@@ -44,7 +45,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textColor="@android:color/darker_gray"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="4dp"
+                    android:contentDescription="@string/movie_genre_desc"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -57,19 +59,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:layout_marginEnd="16dp"/>
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@string/movie_year_desc"/>
 
                     <TextView
                         android:id="@+id/detail_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp"
+                        android:contentDescription="@string/movie_duration_desc"/>
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Description"
+                    android:text="@string/description_header"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_marginBottom="8dp"/>
@@ -85,7 +89,8 @@
                         android:layout_height="150dp"
                         android:layout_marginBottom="16dp"
                         android:lineSpacingMultiplier="1.2"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:contentDescription="@string/movie_description_desc"/>
 
                 </ScrollView>
 
@@ -93,7 +98,8 @@
                     android:id="@+id/btn_close"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Close"
+                    android:text="@string/close_button"
+                    android:contentDescription="@string/close_button_desc"
                     android:layout_marginTop="16dp"
                     app:cornerRadius="8dp"
                     style="@style/Widget.MaterialComponents.Button"/>

@@ -30,10 +30,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Netflix +"
+                    android:text="@string/app_title"
                     android:textColor="@android:color/white"
                     android:textSize="34sp"
                     android:textStyle="bold" />
+
 
             </RelativeLayout>
 
@@ -75,12 +76,13 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/homepage_upload_button" />
+                            android:src="@drawable/homepage_upload_button"
+                            android:contentDescription="@string/upload_icon_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="File Upload"
+                            android:text="@string/menu_file_upload"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="20sp"
@@ -115,12 +117,13 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/homepage_library_button" />
+                            android:src="@drawable/homepage_library_button"
+                            android:contentDescription="@string/library_icon_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Library"
+                            android:text="@string/menu_library"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="20sp"
@@ -155,12 +158,13 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/homepage_users_button" />
+                            android:src="@drawable/homepage_users_button"
+                            android:contentDescription="@string/users_icon_desc" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Users"
+                            android:text="@string/menu_users"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="20sp"
@@ -171,7 +175,6 @@
                 </androidx.cardview.widget.CardView>
 
                 <!-- Row 2 Column 2 (Empty space where Analytics was) -->
-
 
                 <!-- Row 3 Column 1 -->
                 <androidx.cardview.widget.CardView
@@ -198,31 +201,32 @@
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/homepage_settings_button" />
+                            android:src="@drawable/homepage_settings_button"
+                            android:contentDescription="@string/settings_icon_desc" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Settings"
+                            android:text="@string/menu_settings"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="Beta"
+                            android:text="@string/settings_beta_label"
                             android:textAlignment="center"
                             android:textColor="@color/red"
-                            android:textSize="15sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
-
 
             </GridLayout>
 
@@ -235,7 +239,6 @@
                 android:layout_marginTop="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
 
         </LinearLayout>
 

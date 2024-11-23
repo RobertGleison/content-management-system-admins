@@ -19,7 +19,7 @@
             android:layout_width="120dp"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
-            android:contentDescription="Movie thumbnail"/>
+            android:contentDescription="@string/movie_thumbnail_desc"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:contentDescription="@string/movie_title_desc"/>
 
             <TextView
                 android:id="@+id/movie_description"
@@ -40,25 +41,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:maxLines="3"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                android:contentDescription="@string/movie_description_desc"/>
 
             <TextView
                 android:id="@+id/movie_genre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/movie_genre_desc"/>
 
             <TextView
                 android:id="@+id/movie_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/movie_year_desc"/>
 
             <TextView
                 android:id="@+id/movie_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/movie_duration_desc"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

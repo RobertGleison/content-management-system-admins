@@ -1,5 +1,7 @@
 package com.backend.cms.activities;
 
+import static com.backend.cms.utils.Mixins.showQuickToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -180,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     toggleLoadingState(false);
                     if (task.isSuccessful()) {
-                        showToast("Login successful.");
+                        showQuickToast(this, "Login successful");
                         navigateToHomePage();
                     } else {
                         handleLoginError(task);
@@ -198,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
-                        showToast("Password reset email sent");
+                        showQuickToast(this, "Password reset email sent");
                     }
                 });
     }
@@ -212,10 +214,10 @@ public class LoginActivity extends AppCompatActivity {
         try {
             throw task.getException();
         } catch (FirebaseAuthInvalidCredentialsException e) {
-            showToast("Wrong credentials");
+            showQuickToast(this, "Wrong credentials");
             editTextEmail.requestFocus();
         } catch (Exception e) {
-            showToast("Authentication failed.");
+            showQuickToast(this, "Authentication failed.");
         }
     }
 
@@ -245,18 +247,9 @@ public class LoginActivity extends AppCompatActivity {
      * @param layout TextInputLayout to show error in
      */
     private void showError(String message, TextInputLayout layout) {
-        showToast(message);
+        showQuickToast(this, message);
         editTextEmail.requestFocus();
         layout.setError(message);
-    }
-
-
-    /**
-     * Shows a toast message
-     * @param message Message to display
-     */
-    private void showToast(String message) {
-        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
 

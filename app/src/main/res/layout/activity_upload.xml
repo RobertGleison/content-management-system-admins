@@ -7,8 +7,7 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:overScrollMode="never"
-    android:scrollbars="vertical"
-    >
+    android:scrollbars="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +17,6 @@
         android:layout_marginBottom="40dp"
         android:clipToPadding="false"
         android:orientation="vertical">
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -31,7 +29,7 @@
                 android:id="@+id/edit_movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Movie Title"
+                android:hint="@string/movie_title_hint"
                 android:inputType="textMultiLine"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -46,7 +44,7 @@
                 android:id="@+id/edit_movie_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Movie Description"
+                android:hint="@string/movie_description_hint"
                 android:inputType="textMultiLine"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -61,7 +59,7 @@
                 android:id="@+id/edit_movie_genre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Movie Genre"
+                android:hint="@string/movie_genre_hint"
                 android:inputType="textMultiLine"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -76,7 +74,7 @@
                 android:id="@+id/edit_movie_year"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Movie Year"
+                android:hint="@string/movie_year_hint"
                 android:inputType="number"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -91,7 +89,7 @@
                 android:id="@+id/edit_movie_publisher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Movie Publisher"
+                android:hint="@string/movie_publisher_hint"
                 android:inputType="textMultiLine"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -106,7 +104,7 @@
                 android:id="@+id/edit_movie_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Movie Duration (minutes)"
+                android:hint="@string/movie_duration_hint"
                 android:inputType="time"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -133,7 +131,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Select Video"
+                    android:text="@string/select_video"
                     android:textSize="16sp"
                     android:ellipsize="end"
                     android:maxLines="1" />
@@ -142,7 +140,7 @@
                     android:id="@+id/image_video_upload"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:contentDescription="Upload video"
+                    android:contentDescription="@string/upload_video_desc"
                     android:padding="4dp"
                     android:src="@drawable/upload_add_media" />
             </LinearLayout>
@@ -170,7 +168,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Select Thumbnail"
+                    android:text="@string/select_thumbnail"
                     android:textSize="16sp"
                     android:ellipsize="end"
                     android:maxLines="1" />
@@ -179,7 +177,7 @@
                     android:id="@+id/image_thumbnail_upload"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:contentDescription="Upload thumbnail"
+                    android:contentDescription="@string/upload_thumbnail_desc"
                     android:padding="4dp"
                     android:src="@drawable/upload_add_media" />
             </LinearLayout>
@@ -191,11 +189,10 @@
             android:layout_height="60dp"
             android:layout_marginBottom="50dp"
             android:backgroundTint="@color/primary_blue"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>

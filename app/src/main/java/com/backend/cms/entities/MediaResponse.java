@@ -23,7 +23,17 @@ public class MediaResponse implements Serializable {
     private LocalDateTime uploadTimestamp;
     private byte[] thumbnail;
 
-    public MediaResponse(UUID id, String title, String description, String genre, Integer year, String publisher, Integer duration, String filename, Map<String, String> bucketPaths, LocalDateTime uploadTimestamp, byte[] thumbnail) {
+    public MediaResponse(UUID id,
+                         String title,
+                         String description,
+                         String genre,
+                         Integer year,
+                         String publisher,
+                         Integer duration,
+                         String filename,
+                         Map<String,String> bucketPaths,
+                         LocalDateTime uploadTimestamp,
+                         byte[] thumbnail) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -37,7 +47,16 @@ public class MediaResponse implements Serializable {
         this.thumbnail = thumbnail;
     }
 
-    public MediaResponse(UUID id, String title, String description, String genre, Integer year, String publisher, Integer duration, String filename, Map<String, String> bucketPaths, LocalDateTime uploadTimestamp) {
+    public MediaResponse(UUID id,
+                         String title,
+                         String description,
+                         String genre,
+                         Integer year,
+                         String publisher,
+                         Integer duration,
+                         String filename,
+                         Map<String, String> bucketPaths,
+                         LocalDateTime uploadTimestamp) {
         this.id = id;
         this.title = title;
         this.description = description;
