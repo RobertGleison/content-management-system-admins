@@ -69,12 +69,10 @@ public class UsersActivity extends AppCompatActivity {
                                         .build()
                         );
 
-                        // Show success message
                         Toast.makeText(UsersActivity.this,
-                                "User created successfully: " + uid,
+                                "User" + newUser.getEmail() + " created successfully",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        // Show error message
                         Toast.makeText(UsersActivity.this,
                                 "Creation failed: " + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();

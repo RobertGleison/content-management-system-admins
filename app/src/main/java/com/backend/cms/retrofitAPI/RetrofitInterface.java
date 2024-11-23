@@ -25,7 +25,6 @@ public interface RetrofitInterface {
 
     @Multipart
     @POST("media/upload")
-    @Headers("Accept: application/json")
     Call<ResponseBody> uploadVideo(
             @Part MultipartBody.Part videoFile,
             @Part MultipartBody.Part thumbnail,

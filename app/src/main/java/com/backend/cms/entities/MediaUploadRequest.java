@@ -1,7 +1,11 @@
 package com.backend.cms.entities;
 
 
-public class MediaUploadRequest {
+import java.io.Serializable;
+
+public class MediaUploadRequest implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String title;
     private String description;
     private String genre;
@@ -21,23 +25,18 @@ public class MediaUploadRequest {
     public String getTitle() {
         return title;
     }
-
     public String getDescription() {
         return description;
     }
-
     public String getGenre() {
         return genre;
     }
-
     public Integer getYear() {
         return year;
     }
-
     public String getPublisher() {
         return publisher;
     }
-
     public Integer getDuration() {
         return duration;
     }

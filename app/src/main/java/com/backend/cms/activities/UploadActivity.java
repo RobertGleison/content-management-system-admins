@@ -96,6 +96,8 @@ public class UploadActivity extends BaseActivity {
      * 3. Initiates the upload process if validation passes
      */
     private void uploadMedia() {
+        retrofitClient = RetrofitClient.getInstance();
+
         MediaUploadRequest mediaUploadRequest = new MediaUploadRequest(
                 movieTitle.getText().toString().trim(),
                 movieDescription.getText().toString().trim(),
@@ -116,6 +118,7 @@ public class UploadActivity extends BaseActivity {
             uploadToServer(mediaUploadRequest);
         } catch (Exception e) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -152,6 +155,7 @@ public class UploadActivity extends BaseActivity {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 runOnUiThread(() -> Toast.makeText(UploadActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_LONG).show());
+                System.out.println(t.getMessage());
             }
         });
     }
@@ -176,6 +180,7 @@ public class UploadActivity extends BaseActivity {
                         response.errorBody().string() : "Unknown error";
                 Toast.makeText(UploadActivity.this, "Upload failed: " + errorBody,
                         Toast.LENGTH_LONG).show();
+                System.out.println(errorBody);
             } catch (IOException e) {
                 Toast.makeText(UploadActivity.this, "Upload failed: " + response.code(),
                         Toast.LENGTH_LONG).show();

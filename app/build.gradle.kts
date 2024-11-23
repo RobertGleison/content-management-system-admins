@@ -65,7 +65,6 @@ dependencies {
     implementation(libs.firebase.auth)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
-    compileOnly(libs.lombok)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.appcompat)
