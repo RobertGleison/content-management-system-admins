@@ -1,5 +1,7 @@
 package com.backend.cms.activities;
 
+import static com.backend.cms.utils.Mixins.showQuickToast;
+
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -110,15 +112,15 @@ public class UploadActivity extends BaseActivity {
         String validationError = UploadValidator.validation(mediaUploadRequest, mediaHandler.getVideoFile(), mediaHandler.getThumbnailFile());
 
         if (validationError != null) {
-            Toast.makeText(this, validationError, Toast.LENGTH_LONG).show();
+            showQuickToast(this, validationError);
+
             return;
         }
 
         try {
             uploadToServer(mediaUploadRequest);
         } catch (Exception e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            System.out.println(e.getMessage());
+            showQuickToast(this, "Error: " + e.getMessage());
         }
     }
 
@@ -143,7 +145,7 @@ public class UploadActivity extends BaseActivity {
                 mediaHandler.getSelectedImageUri()
         );
 
-        Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
+        showQuickToast(this, "Uploading...");
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -153,9 +155,7 @@ public class UploadActivity extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                runOnUiThread(() -> Toast.makeText(UploadActivity.this,
-                        "Error: " + t.getMessage(), Toast.LENGTH_LONG).show());
-                System.out.println(t.getMessage());
+                runOnUiThread(() -> showQuickToast(UploadActivity.this, "Error: " + t.getMessage()));
             }
         });
     }
@@ -172,18 +172,16 @@ public class UploadActivity extends BaseActivity {
      */
     private void handleUploadResponse(Response<ResponseBody> response) {
         if (response.isSuccessful()) {
-            Toast.makeText(UploadActivity.this, "Upload successful!", Toast.LENGTH_LONG).show();
+            showQuickToast(this, "Upload successful");
             clearForm();
         } else {
             try {
                 String errorBody = response.errorBody() != null ?
                         response.errorBody().string() : "Unknown error";
-                Toast.makeText(UploadActivity.this, "Upload failed: " + errorBody,
-                        Toast.LENGTH_LONG).show();
+                showQuickToast(UploadActivity.this, "Upload failed: " + errorBody);
                 System.out.println(errorBody);
             } catch (IOException e) {
-                Toast.makeText(UploadActivity.this, "Upload failed: " + response.code(),
-                        Toast.LENGTH_LONG).show();
+                showQuickToast(UploadActivity.this, "Upload failed: " + response.code());
             }
         }
     }

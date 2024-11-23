@@ -1,12 +1,13 @@
 package com.backend.cms.upload;
 
+import static com.backend.cms.utils.Mixins.showQuickToast;
+
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -167,7 +168,7 @@ public class MediaHandler {
 
         nameView.setText(fileName);
         iconView.setImageResource(R.drawable.ic_video_file);
-        showToast("Video selected: " + fileName);
+        showQuickToast(activity, "Video selected");
     }
 
 
@@ -181,7 +182,8 @@ public class MediaHandler {
 
         nameView.setText(fileName);
         iconView.setImageResource(R.drawable.ic_image_file);
-        showToast("Thumbnail selected: " + fileName);
+        showQuickToast(activity, "Thumbnail selected");
+
     }
 
 
@@ -237,7 +239,7 @@ public class MediaHandler {
      * @param message The error message to display
      */
     private void showError(String message) {
-        showToast(message);
+        showQuickToast(activity, message);
     }
 
 
@@ -246,7 +248,7 @@ public class MediaHandler {
      * @param message The message to display
      */
     private void showToast(String message) {
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+        showQuickToast(activity, message);
     }
 
 

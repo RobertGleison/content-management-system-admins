@@ -1,5 +1,7 @@
 package com.backend.cms.activities;
 
+import static com.backend.cms.utils.Mixins.showQuickToast;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -119,7 +121,7 @@ public class CatalogActivity extends BaseActivity implements OnMovieClickListene
      * @param message The error message to display
      */
     private void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        showQuickToast(this, message);
     }
 
 
