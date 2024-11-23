@@ -21,28 +21,35 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+// Activity responsible for Upload Screen (Upload Media Form)
 public class UploadActivity extends BaseActivity {
 
-    private MediaHandler mediaHandler;
+    private RetrofitClient retrofitClient; // Client for making HTTP requests
+    private MediaHandler mediaHandler; // Responsible for get media from smartphone
+
     private EditText movieTitle;
     private EditText movieDescription;
     private EditText movieGenre;
     private EditText movieYear;
     private EditText moviePublisher;
     private EditText movieDuration;
-    private RetrofitClient retrofitClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_card);
 
-        mediaHandler = new MediaHandler(this); // Handle the android file selection
-        initializeViews(); // Initialize form
-        clearForm(); // Reset form after submission
+        mediaHandler = new MediaHandler(this);
+        initializeViews();
+        clearForm();
     }
 
 
+    /**
+     * Sets up the initial form components
+     */
     private void initializeViews() {
         movieTitle = findViewById(R.id.edit_movie_title);
         movieDescription = findViewById(R.id.edit_movie_description);
@@ -66,6 +73,9 @@ public class UploadActivity extends BaseActivity {
     }
 
 
+    /**
+     * Resets all form fields to their default empty state
+     */
     public void clearForm() {
         movieTitle.setText("");
         movieDescription.setText("");
@@ -77,6 +87,13 @@ public class UploadActivity extends BaseActivity {
     }
 
 
+    /**
+     * Handles the media upload process when the submit button is clicked.
+     * This method:
+     * 1. Creates a MediaUploadRequest from form data
+     * 2. Validates the request and selected media files
+     * 3. Initiates the upload process if validation passes
+     */
     private void uploadMedia() {
         MediaUploadRequest mediaUploadRequest = new MediaUploadRequest(
                 movieTitle.getText().toString().trim(),
@@ -102,6 +119,15 @@ public class UploadActivity extends BaseActivity {
     }
 
 
+    /**
+     * Handles the actual upload of media files and metadata to the server.
+     * This method:
+     * 1. Creates an UploadService instance
+     * 2. Prepares the upload call with all necessary data
+     * 3. Executes the upload asynchronously
+     * 4. Handles the response through callbacks
+     * @param mediaUploadRequest The validated request containing all media metadata
+     */
     private void uploadToServer(MediaUploadRequest mediaUploadRequest) {
         UploadService uploadService = new UploadService(getContentResolver(), retrofitClient);
 
@@ -129,6 +155,16 @@ public class UploadActivity extends BaseActivity {
         });
     }
 
+
+    /**
+     * Handles the server's response to the upload request.
+     * This method:
+     * 1. Checks if the upload was successful
+     * 2. Displays appropriate success/error messages to the user
+     * 3. Clears the form on successful upload
+     * 4. Handles any error responses from the server
+     * @param response The server's response to the upload request
+     */
     private void handleUploadResponse(Response<ResponseBody> response) {
         if (response.isSuccessful()) {
             Toast.makeText(UploadActivity.this, "Upload successful!", Toast.LENGTH_LONG).show();
@@ -145,10 +181,4 @@ public class UploadActivity extends BaseActivity {
             }
         }
     }
-
-
-
-
-
-
 }
