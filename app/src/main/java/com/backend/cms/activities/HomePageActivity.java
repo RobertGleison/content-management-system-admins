@@ -11,6 +11,7 @@ import com.backend.cms.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 // Activity responsible for the App Home Screen
 public class HomePageActivity extends BaseActivity {
 
@@ -60,9 +61,10 @@ public class HomePageActivity extends BaseActivity {
         }
     }
 
-
-    //Sets up the logout button with click listener to handle user logout.
-    private void setupLogoutButton() {
+    /**
+    * Sets up the logout button with click listener to handle user logout.
+    */
+     private void setupLogoutButton() {
         logout_button = findViewById(R.id.logout_button);
         logout_button.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
