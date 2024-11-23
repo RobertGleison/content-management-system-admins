@@ -10,22 +10,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.87" />
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/search_view_border"
+        android:contentDescription="@string/search_movies"
         android:iconifiedByDefault="false"
         android:queryHint="@string/search_movie_hint"
-        android:background="@android:drawable/editbox_background"
-        android:padding="8dp"
-        android:contentDescription="@string/search_movies"
         style="@android:style/Widget.Material.SearchView"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryBackground="@null"
+        app:iconifiedByDefault="false"/>
+
 
     <Spinner
         android:id="@+id/genreSpinner"
