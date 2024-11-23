@@ -21,7 +21,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Upload extends BaseActivity {
+public class UploadActivity extends BaseActivity {
 
     private MediaHandler mediaHandler;
     private EditText movieTitle;
@@ -123,7 +123,7 @@ public class Upload extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                runOnUiThread(() -> Toast.makeText(Upload.this,
+                runOnUiThread(() -> Toast.makeText(UploadActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_LONG).show());
             }
         });
@@ -131,16 +131,16 @@ public class Upload extends BaseActivity {
 
     private void handleUploadResponse(Response<ResponseBody> response) {
         if (response.isSuccessful()) {
-            Toast.makeText(Upload.this, "Upload successful!", Toast.LENGTH_LONG).show();
+            Toast.makeText(UploadActivity.this, "Upload successful!", Toast.LENGTH_LONG).show();
             clearForm();
         } else {
             try {
                 String errorBody = response.errorBody() != null ?
                         response.errorBody().string() : "Unknown error";
-                Toast.makeText(Upload.this, "Upload failed: " + errorBody,
+                Toast.makeText(UploadActivity.this, "Upload failed: " + errorBody,
                         Toast.LENGTH_LONG).show();
             } catch (IOException e) {
-                Toast.makeText(Upload.this, "Upload failed: " + response.code(),
+                Toast.makeText(UploadActivity.this, "Upload failed: " + response.code(),
                         Toast.LENGTH_LONG).show();
             }
         }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <!-- App Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -10,6 +12,9 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+
+
+    <!-- App Configurations -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_foreground"
@@ -17,42 +22,59 @@
         android:theme="@style/CustomLightTheme"
         android:usesCleartextTraffic="true">
 
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false"
-            android:theme="@style/CustomLightTheme" /> <!-- Splash Screen: Application Entry Point -->
+
+        <!-- Splash Screen -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Home Page: Main Application Screen -->
+        </activity>
+
+
+        <!-- Login Screen -->
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false"
+            android:theme="@style/CustomLightTheme" />
+
+
+        <!-- Home Screen -->
         <activity
             android:name=".activities.HomePageActivity"
             android:exported="true"
-            android:theme="@style/CustomLightTheme"></activity> <!-- Upload Screen: Media Upload Interface -->
+            android:theme="@style/CustomLightTheme" />
+
+
+        <!-- Upload Screen -->
         <activity
-            android:name=".activities.Upload"
+            android:name=".activities.UploadActivity"
             android:exported="false"
             android:label="Upload Video"
             android:parentActivityName=".activities.HomePageActivity"
             android:windowSoftInputMode="adjustResize" />
+
+
+        <!-- Catalog Screen -->
         <activity
-            android:name=".activities.Library"
+            android:name=".activities.CatalogActivity"
             android:exported="false"
             android:label="Library"
             android:parentActivityName=".activities.HomePageActivity"
             android:windowSoftInputMode="adjustResize" />
+
+
+        <!-- Users Screen -->
         <activity
             android:name=".activities.UsersActivity"
             android:exported="false"
             android:label="Users"
             android:parentActivityName=".activities.HomePageActivity"
             android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>

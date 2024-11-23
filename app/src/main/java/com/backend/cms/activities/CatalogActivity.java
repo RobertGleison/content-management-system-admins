@@ -10,24 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.backend.cms.R;
-import com.backend.cms.utils.MockDataGenerator;
 import com.backend.cms.utils.MovieAdapter;
 import com.backend.cms.entities.MediaResponse;
 import com.backend.cms.retrofitAPI.RetrofitClient;
 import com.backend.cms.utils.MovieDetailsDialog;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Library extends BaseActivity implements MovieAdapter.OnMovieClickListener {
+public class CatalogActivity extends BaseActivity implements MovieAdapter.OnMovieClickListener {
     private MovieAdapter adapter;
     private ProgressBar loadingIndicator;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -56,36 +50,7 @@ public class Library extends BaseActivity implements MovieAdapter.OnMovieClickLi
         loadingIndicator = findViewById(R.id.loading_indicator);
     }
 
-//    private void loadMovies() {
-////        showLoading(true);
-////        new android.os.Handler().postDelayed(() -> {
-//            // Create mock data
-////            List<MediaResponse> mockMovies = MockDataGenerator.createMockData();
-//
-//            // Update UI
-////            showLoading(false);
-////            adapter.setMovies(mockMovies);
-////        }, 1000);
-//        RetrofitClient.getInstance()
-//                .getApi()
-//                .getAllMedia()
-//                .enqueue(new Callback<List<MediaResponse>>() {
-//                    @Override
-//                    public void onResponse(Call<List<MediaResponse>> call, Response<List<MediaResponse>> response) {
-//                        showLoading(false);
-//                        if (response.isSuccessful() && response.body() != null) {
-//                            adapter.setMovies(response.body());
-//                        } else {
-//                            showError("Failed to load movies");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<List<MediaResponse>> call, Throwable t) {
-//                        showLoading(false);
-//                        showError("Error: " + t.getMessage());
-//                    }
-//                });}
+
 
     private void loadMovies() {
         showLoading(true);

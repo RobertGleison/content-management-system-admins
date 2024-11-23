@@ -1,18 +1,22 @@
 package com.backend.cms.activities;
 
+import android.content.res.ColorStateList;
+import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import android.content.res.ColorStateList;
+
 import androidx.cardview.widget.CardView;
-import android.content.Intent;
 import com.backend.cms.R;
-import com.backend.cms.entities.MediaResponse;
 
-// Implement reusable functions through the activities that extends BaseActivity
+
+// Implements BaseActivity with common resources used by activities
 public abstract class BaseActivity extends AppCompatActivity {
-
-
-    // Implement the activity transition when you click a CardView
+    /**
+     * Sets up a click listener for navigation between activities with a visual feedback effect.
+     * @param cardView            The CardView that will trigger the navigation
+     * @param destinationActivity The target activity class to navigate to
+     */
     protected void setNavigationClickListener(CardView cardView, Class<?> destinationActivity) {
         cardView.setOnClickListener(view -> {
             effectOnClick(cardView);
@@ -20,18 +24,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    // Implement visual effect when you click a CardView
+
+    /**
+     * Applies a temporary visual effect to a CardView when clicked.
+     * Changes the background color and elevation temporarily before reverting to original state.
+     * @param cardView The CardView to apply the click effect to
+     */
     protected void effectOnClick(CardView cardView) {
         ColorStateList normalColor = cardView.getCardBackgroundColor();
         float normalElevation = cardView.getCardElevation();
 
         cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.click_color));
         cardView.setCardElevation(3);
-
         cardView.postDelayed(() -> {
             cardView.setCardBackgroundColor(normalColor);
             cardView.setCardElevation(normalElevation);
         }, 200);
     }
-
 }
