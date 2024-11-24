@@ -324,7 +324,7 @@ public class UploadActivity extends BaseActivity {
      * Close connection and retrofit client
      */
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         super.onDestroy();
         closeUploadConnection();
         RetrofitClient.getInstance().closeConnection();
