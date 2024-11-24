@@ -1,17 +1,14 @@
 package com.backend.cms.fetchMedia;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.backend.cms.R;
-import com.backend.cms.activities.CatalogActivity;
 import com.backend.cms.entities.MediaResponse;
 import com.backend.cms.utils.Mixins;
 import com.bumptech.glide.Glide;
@@ -23,7 +20,6 @@ import java.util.List;
 
 // Card view wrapper for a unique media item
 public class MovieCardView extends RecyclerView.ViewHolder {
-
     private final CardView cardView;
     private final ImageView thumbnail;
     private final TextView title;
@@ -31,21 +27,21 @@ public class MovieCardView extends RecyclerView.ViewHolder {
     private final TextView genre;
     private final TextView year;
     private final TextView duration;
+    private final CardView deleteButton;
     private final List<MediaResponse> movies;
-    private final OnMovieClickListener clickListener;
+    private final MovieInteractionListener clickListener;
+    private final MovieInteractionListener deleteListener;
     private Context activity;
 
-
-    /**
-     * Constructs a MovieViewHolder and initializes all view components
-     * @param itemView The root view of the movie card
-     * @param movies List of movies to display
-     * @param clickListener Listener for movie click events
-     */
-    public MovieCardView(@NonNull View itemView, List<MediaResponse> movies, OnMovieClickListener clickListener, Context activity) {
+    public MovieCardView(@NonNull View itemView,
+                         List<MediaResponse> movies,
+                         MovieInteractionListener clickListener,
+                         MovieInteractionListener deleteListener,
+                         Context activity) {
         super(itemView);
         this.movies = movies;
         this.clickListener = clickListener;
+        this.deleteListener = deleteListener;
         this.activity = activity;
 
         cardView = (CardView) itemView;
@@ -55,15 +51,13 @@ public class MovieCardView extends RecyclerView.ViewHolder {
         genre = itemView.findViewById(R.id.movie_genre);
         year = itemView.findViewById(R.id.movie_year);
         duration = itemView.findViewById(R.id.movie_duration);
+        deleteButton = itemView.findViewById(R.id.delete_button);
 
-        setupClickListener();
+        setupClickListeners();
     }
 
-
-    /**
-     * Sets up the click listener for the card view with visual feedback
-     */
-    private void setupClickListener() {
+    private void setupClickListeners() {
+        // Card click listener
         cardView.setOnClickListener(v -> {
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
@@ -71,14 +65,17 @@ public class MovieCardView extends RecyclerView.ViewHolder {
                 clickListener.onMovieClick(movies.get(position));
             }
         });
+
+        // Delete button click listener
+        deleteButton.setOnClickListener(v -> {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                Mixins.effectOnClick(activity, deleteButton);
+                deleteListener.onDeleteClick(movies.get(position), position);
+            }
+        });
     }
 
-
-    /**
-     * Binds movie data to the view components
-     * Handles loading of thumbnails and formatting of text fields
-     * @param movie The MediaResponse object containing movie data
-     */
     public void bind(MediaResponse movie) {
         title.setText(movie.getTitle());
         description.setText(movie.getDescription());

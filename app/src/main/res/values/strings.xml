@@ -88,6 +88,7 @@
     <!-- Themes -->
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+    <string name="delete_movie">Delete movie</string>
 
     <!-- Arrays -->
     <string-array name="languages">

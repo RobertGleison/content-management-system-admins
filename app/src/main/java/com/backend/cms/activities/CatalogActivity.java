@@ -2,6 +2,7 @@ package com.backend.cms.activities;
 
 import static com.backend.cms.utils.Mixins.showQuickToast;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Spinner;
 
@@ -22,7 +25,7 @@ import com.backend.cms.fetchMedia.MovieAdapter;
 import com.backend.cms.entities.MediaResponse;
 import com.backend.cms.retrofitAPI.RetrofitClient;
 import com.backend.cms.fetchMedia.MovieDetailsDialog;
-import com.backend.cms.fetchMedia.OnMovieClickListener;
+import com.backend.cms.fetchMedia.MovieInteractionListener;
 
 import java.util.List;
 
@@ -39,7 +42,7 @@ import retrofit2.Response;
  * - Searching content by title
  * - Showing detailed information about selected media items
  */
-public class CatalogActivity extends BaseActivity implements OnMovieClickListener {
+public class CatalogActivity extends BaseActivity implements MovieInteractionListener {
     private static final String TAG = "CatalogActivity";
 
     private MovieAdapter adapter;
@@ -47,7 +50,6 @@ public class CatalogActivity extends BaseActivity implements OnMovieClickListene
     private SwipeRefreshLayout swipeRefreshLayout;
     private Spinner genreSpinner;
     private SearchView searchView;
-    private List<MediaResponse> allMovies;
     private boolean isInitialSetup = true;
 
     private final String[] genres = {
@@ -73,18 +75,21 @@ public class CatalogActivity extends BaseActivity implements OnMovieClickListene
         loadMovies();
     }
 
-
-    /**
-     * Initializes and configures all view components including RecyclerView,
-     * SwipeRefreshLayout, and loading indicator.
-     */
     private void setupViews() {
         Log.d(TAG, "setupViews: Setting up UI components");
 
         // Setup RecyclerView
         RecyclerView recyclerView = findViewById(R.id.movies_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MovieAdapter(this, this);
+
+        // Initialize adapter - remove the named parameters syntax
+//        adapter = new MovieAdapter(this, this, this);
+        // or for better readability:
+        adapter = new MovieAdapter(
+                this,  // MovieInteractionListener for clicks
+                this,  // MovieInteractionListener for deletes
+                this   // Context
+        );
         recyclerView.setAdapter(adapter);
 
         // Initialize other UI components
@@ -97,6 +102,56 @@ public class CatalogActivity extends BaseActivity implements OnMovieClickListene
 
         loadingIndicator = findViewById(R.id.loading_indicator);
         Log.d(TAG, "setupViews: UI components initialized successfully");
+    }
+
+    @Override
+    public void onDeleteClick(MediaResponse movie, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Movie")
+                .setMessage("Are you sure you want to delete " + movie.getTitle() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    showLoading(true);  // Show loading indicator while deleting
+                    RetrofitClient.getInstance().getApi().deleteByTitle(movie.getTitle())
+                            .enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(@NonNull Call<Void> call,
+                                                       @NonNull Response<Void> response) {
+                                    showLoading(false);
+                                    if (response.isSuccessful()) {
+                                        adapter.removeMovie(position);
+                                        showQuickToast(CatalogActivity.this,
+                                                "Movie deleted successfully");
+                                    } else {
+                                        handleDeleteError(response);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Call<Void> call,
+                                                      @NonNull Throwable t) {
+                                    showLoading(false);
+                                    handleNetworkError(t);
+                                }
+                            });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /**
+     * Handles errors from delete operation
+     * @param response The error response from the server
+     */
+    private void handleDeleteError(Response<Void> response) {
+        try {
+            String errorBody = response.errorBody() != null ?
+                    response.errorBody().string() : "Unknown error";
+            Log.e(TAG, "handleDeleteError: Failed to delete movie: " + errorBody);
+            showError("Failed to delete movie: " + errorBody);
+        } catch (Exception e) {
+            Log.e(TAG, "handleDeleteError: Exception while handling error", e);
+            showError("Failed to delete movie: " + e.getMessage());
+        }
     }
 
 
@@ -265,7 +320,7 @@ public class CatalogActivity extends BaseActivity implements OnMovieClickListene
         showLoading(false);
 
         if (response.isSuccessful() && response.body() != null) {
-            allMovies = response.body();
+            List<MediaResponse> allMovies = response.body();
             Log.d(TAG, "handleMediaResponse: Loaded " + allMovies.size() +
                     " movies for " + context);
             adapter.setMovies(response.body());

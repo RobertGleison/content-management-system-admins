@@ -72,6 +72,11 @@ public interface RetrofitInterface {
 
 
 
+    @DELETE("media/title/{title}")
+    Call<Void> deleteByTitle(@Path("title") String title);
+
+
+
     @GET("users")
     Call<List<User>> getUsers();
 
