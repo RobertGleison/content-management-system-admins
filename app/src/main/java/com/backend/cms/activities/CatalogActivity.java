@@ -26,6 +26,7 @@ import com.backend.cms.entities.MediaResponse;
 import com.backend.cms.retrofitAPI.RetrofitClient;
 import com.backend.cms.fetchMedia.MovieDetailsDialog;
 import com.backend.cms.fetchMedia.MovieInteractionListener;
+import com.backend.cms.retrofitAPI.RetrofitInterface;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ import retrofit2.Response;
  */
 public class CatalogActivity extends BaseActivity implements MovieInteractionListener {
     private static final String TAG = "CatalogActivity";
+    private RetrofitInterface api;
 
     private MovieAdapter adapter;
     private ProgressBar loadingIndicator;
@@ -80,6 +82,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         Log.d(TAG, "onCreate: Initializing CatalogActivity");
         setContentView(R.layout.activity_catalog);
 
+        api = RetrofitClient.getInstance().getApi();
         setupViews();
         setupSpinner();
         setupSearchView();
@@ -136,8 +139,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
                     RetrofitClient.getInstance().getApi().deleteByTitle(movie.getTitle())
                             .enqueue(new Callback<Void>() {
                                 @Override
-                                public void onResponse(@NonNull Call<Void> call,
-                                                       @NonNull Response<Void> response) {
+                                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                                     showLoading(false);
                                     if (response.isSuccessful()) {
                                         adapter.removeMovie(position);
@@ -222,7 +224,6 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
      */
     private void setupSpinner() {
         Log.d(TAG, "setupSpinner: Setting up genre spinner");
-
         ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -233,8 +234,10 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
         genreSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> parentView,
+                                       View selectedItemView,
+                                       int position,
+                                       long id) {
                 if (isInitialSetup) {
                     isInitialSetup = false;
                     return;
@@ -243,11 +246,8 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
                 String selectedGenre = genres[position];
                 Log.d(TAG, "onItemSelected: Genre selected: " + selectedGenre);
 
-                if (position == 0) {
-                    loadMovies();
-                } else {
-                    loadMoviesByGenre(selectedGenre);
-                }
+                if (position == 0) { loadMovies();}
+                else { loadMoviesByGenre(selectedGenre);}
             }
 
             @Override
@@ -267,13 +267,11 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         Log.d(TAG, "loadMovies: Starting to load all movies");
         showLoading(true);
 
-        RetrofitClient.getInstance()
-                .getApi()
-                .getAllMedia()
+
+                api.getAllMedia()
                 .enqueue(new Callback<List<MediaResponse>>() {
                     @Override
-                    public void onResponse(Call<List<MediaResponse>> call,
-                                           Response<List<MediaResponse>> response) {
+                    public void onResponse(Call<List<MediaResponse>> call, Response<List<MediaResponse>> response) {
                         handleMediaResponse(response, "all movies");
                     }
 
@@ -294,13 +292,10 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         Log.d(TAG, "loadMoviesByTitle: Starting search for title: " + title);
         showLoading(true);
 
-        RetrofitClient.getInstance()
-                .getApi()
-                .getMediaByTitle(title)
+        api.getMediaByTitle(title)
                 .enqueue(new Callback<List<MediaResponse>>() {
                     @Override
-                    public void onResponse(Call<List<MediaResponse>> call,
-                                           Response<List<MediaResponse>> response) {
+                    public void onResponse(Call<List<MediaResponse>> call, Response<List<MediaResponse>> response) {
                         handleMediaResponse(response, "title search: " + title);
                     }
 
@@ -321,13 +316,10 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         Log.d(TAG, "loadMoviesByGenre: Starting to load movies for genre: " + genre);
         showLoading(true);
 
-        RetrofitClient.getInstance()
-                .getApi()
-                .getMediaByGenre(genre)
+        api.getMediaByGenre(genre)
                 .enqueue(new Callback<List<MediaResponse>>() {
                     @Override
-                    public void onResponse(Call<List<MediaResponse>> call,
-                                           Response<List<MediaResponse>> response) {
+                    public void onResponse(Call<List<MediaResponse>> call, Response<List<MediaResponse>> response) {
                         handleMediaResponse(response, "genre: " + genre);
                     }
 
@@ -352,15 +344,12 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
         if (response.isSuccessful() && response.body() != null) {
             List<MediaResponse> allMovies = response.body();
-            Log.d(TAG, "handleMediaResponse: Loaded " + allMovies.size() +
-                    " movies for " + context);
+            Log.d(TAG, "handleMediaResponse: Loaded " + allMovies.size() + " movies for " + context);
             adapter.setMovies(response.body());
         } else {
             try {
-                String errorBody = response.errorBody() != null ?
-                        response.errorBody().string() : "Unknown error";
-                Log.e(TAG, "handleMediaResponse: Error loading " + context +
-                        ", error: " + errorBody);
+                String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                Log.e(TAG, "handleMediaResponse: Error loading " + context + ", error: " + errorBody);
                 showError("Failed to load movies: " + errorBody);
             } catch (Exception e) {
                 Log.e(TAG, "handleMediaResponse: Exception while handling error", e);
@@ -416,9 +405,18 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
      */
     @Override
     public void onMovieClick(MediaResponse media) {
-        Log.d(TAG, "onMovieClick: Movie clicked: " +
-                (media != null ? media.getTitle() : "null"));
+        Log.d(TAG, "onMovieClick: Movie clicked: " + (media != null ? media.getTitle() : "null"));
         MovieDetailsDialog dialog = MovieDetailsDialog.newInstance(media);
         dialog.show(getSupportFragmentManager(), "movie_details");
+    }
+
+
+    /**
+     * Close connection and retrofit client
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RetrofitClient.getInstance().closeConnection();
     }
 }

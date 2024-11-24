@@ -25,6 +25,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class RetrofitClient {
     private static RetrofitClient instance = null;
+    private static OkHttpClient client;
+    private static Gson gson;
+    private static Retrofit retrofit;
     private static RetrofitInterface api;
 
     /**
@@ -77,19 +80,19 @@ public class RetrofitClient {
         };
 
         // Create OkHttpClient with timeout configurations
-        OkHttpClient client = new OkHttpClient.Builder()
+        client = new OkHttpClient.Builder()
                 .connectTimeout(RetrofitNetworkConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(RetrofitNetworkConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(RetrofitNetworkConfig.READ_TIMEOUT, TimeUnit.SECONDS)
                 .build();
 
         // Create Gson with custom TypeAdapter for LocalDateTime
-        Gson gson = new GsonBuilder()
+        gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
                 .create();
 
         // Create and configure Retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .baseUrl(RetrofitNetworkConfig.BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -116,5 +119,33 @@ public class RetrofitClient {
      */
     public RetrofitInterface getApi() {
         return api;
+    }
+
+    /**
+     * Closes all active connections and cleans up resources.
+     * This method should be called when the application is being shut down
+     * or when you want to force close all network connections.
+     */
+    public void closeConnection() {
+        if (client != null) {
+            client.dispatcher().cancelAll();
+            client.dispatcher().executorService().shutdown();
+            client.connectionPool().evictAll();
+
+            try {
+                if (client.cache() != null) {
+                    client.cache().close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Clear all static references
+        instance = null;
+        api = null;
+        client = null;
+        gson = null;
+        retrofit = null;
     }
 }

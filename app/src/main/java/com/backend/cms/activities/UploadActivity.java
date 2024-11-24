@@ -32,6 +32,7 @@ import retrofit2.Response;
  */
 public class UploadActivity extends BaseActivity {
     private static final String TAG = "UploadActivity";
+    private Call<ResponseBody> uploadCall;
 
     private RetrofitInterface api;
     private MediaHandler mediaHandler;
@@ -228,7 +229,11 @@ public class UploadActivity extends BaseActivity {
     private void uploadToServer(MediaUploadRequest request) {
         showQuickToast(this, "Uploading...");
 
-        Call<ResponseBody> call = uploadService.uploadMedia(
+        if (uploadCall != null && !uploadCall.isCanceled()) {
+            uploadCall.cancel();
+        }
+
+        uploadCall = uploadService.uploadMedia(
                 request,
                 mediaHandler.getVideoFile(),
                 mediaHandler.getThumbnailFile(),
@@ -236,19 +241,36 @@ public class UploadActivity extends BaseActivity {
                 mediaHandler.getSelectedImageUri()
         );
 
-        call.enqueue(new Callback<ResponseBody>() {
+        uploadCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call,
                                    @NonNull Response<ResponseBody> response) {
-                runOnUiThread(() -> handleUploadResponse(response));
+                runOnUiThread(() -> {
+                    handleUploadResponse(response);
+                    closeUploadConnection();
+                });
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call,
                                   @NonNull Throwable t) {
-                runOnUiThread(() -> handleUploadError(t));
+                runOnUiThread(() -> {
+                    handleUploadError(t);
+                    closeUploadConnection();
+                });
             }
         });
+    }
+
+
+    /**
+     * Close Upload Connection
+     */
+    private void closeUploadConnection() {
+        if (uploadCall != null) {
+            uploadCall.cancel(); // Cancel the call if it's still ongoing
+            uploadCall = null;
+        }
     }
 
 
@@ -295,5 +317,16 @@ public class UploadActivity extends BaseActivity {
      */
     private void handleUploadError(Throwable t) {
         showQuickToast(this, "Error: " + t.getMessage());
+    }
+
+
+    /**
+     * Close connection and retrofit client
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeUploadConnection();
+        RetrofitClient.getInstance().closeConnection();
     }
 }
