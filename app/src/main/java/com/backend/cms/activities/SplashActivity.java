@@ -12,16 +12,27 @@ import androidx.activity.EdgeToEdge;
 import androidx.core.content.ContextCompat;
 
 import com.backend.cms.R;
+import android.content.SharedPreferences;
 
-// Activity responsible for Splash Screen animation on App launch
 public class SplashActivity extends BaseActivity {
 
     private static final int SPLASH_TIME = 2500;
+    private static final String PREF_NAME = "CMSPrefs";
+    private static final String KEY_USER_CACHED = "user_cached";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check for cached data first
+        if (hasCachedUserData()) {
+            // Skip splash and go directly to main screen
+            navigateToMainScreen();
+            return;
+        }
+
+        // If no cache, proceed with normal splash screen
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash);
 
@@ -33,6 +44,27 @@ public class SplashActivity extends BaseActivity {
 
         setupSplashImage();
         scheduleLoginTransition();
+    }
+
+
+    /**
+     * Checks if there is cached user data in SharedPreferences
+     * @return true if user data is cached, false otherwise
+     */
+    private boolean hasCachedUserData() {
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        return prefs.getBoolean(KEY_USER_CACHED, false);
+    }
+
+
+    /**
+     * Navigates directly to the main screen, bypassing splash and login
+     */
+    private void navigateToMainScreen() {
+        Intent intent = new Intent(SplashActivity.this, HomePageActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
 
