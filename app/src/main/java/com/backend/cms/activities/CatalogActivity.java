@@ -415,7 +415,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
      * Close connection and retrofit client
      */
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         super.onDestroy();
         RetrofitClient.getInstance().closeConnection();
     }
