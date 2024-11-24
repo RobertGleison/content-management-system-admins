@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import com.backend.cms.R;
 import com.backend.cms.entities.User;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Objects;

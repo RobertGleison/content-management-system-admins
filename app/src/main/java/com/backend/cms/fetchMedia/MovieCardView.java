@@ -18,7 +18,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-// Card view wrapper for a unique media item
+/**
+ * ViewHolder class for displaying individual media items in a RecyclerView.
+ * Represents a card-based layout containing movie/media information including:
+ * - Thumbnail image
+ * - Title
+ * - Description
+ * - Genre
+ * - Year
+ * - Duration
+ * - Delete button
+ *
+ * This class handles both the visual representation of movie data and user interactions
+ * through click listeners for both the entire card and the delete button.
+ */
 public class MovieCardView extends RecyclerView.ViewHolder {
     private final CardView cardView;
     private final ImageView thumbnail;
@@ -33,6 +46,15 @@ public class MovieCardView extends RecyclerView.ViewHolder {
     private final MovieInteractionListener deleteListener;
     private Context activity;
 
+
+    /**
+     * Constructs a MovieCardView and initializes all its UI components.
+     * @param itemView The root view of the movie card layout
+     * @param movies Reference to the list of movies managed by the adapter
+     * @param clickListener Listener for handling card click events
+     * @param deleteListener Listener for handling delete button clicks
+     * @param activity Context reference for resource access and UI operations
+     */
     public MovieCardView(@NonNull View itemView,
                          List<MediaResponse> movies,
                          MovieInteractionListener clickListener,
@@ -56,6 +78,12 @@ public class MovieCardView extends RecyclerView.ViewHolder {
         setupClickListeners();
     }
 
+
+    /**
+     * Sets up click listeners for both the card view and delete button.
+     * Implements click animations and validates adapter position before
+     * triggering listener callbacks.
+     */
     private void setupClickListeners() {
         // Card click listener
         cardView.setOnClickListener(v -> {
@@ -76,6 +104,12 @@ public class MovieCardView extends RecyclerView.ViewHolder {
         });
     }
 
+
+    /**
+     * Binds a MediaResponse object's data to the card's UI elements.
+     * Updates all text views and loads the thumbnail image.
+     * @param movie The MediaResponse object containing the movie data to display
+     */
     public void bind(MediaResponse movie) {
         title.setText(movie.getTitle());
         description.setText(movie.getDescription());
@@ -88,8 +122,9 @@ public class MovieCardView extends RecyclerView.ViewHolder {
 
 
     /**
-     * Loads thumbnail image using Glide
-     * Handles cases where thumbnail data is missing or invalid
+     * Loads thumbnail image using Glide library with error handling.
+     * Uses placeholder images for loading and error states.
+     * If thumbnail data is null or empty, displays a default placeholder.
      * @param thumbnailData Byte array containing thumbnail image data
      */
     private void loadThumbnail(byte[] thumbnailData) {
@@ -108,9 +143,10 @@ public class MovieCardView extends RecyclerView.ViewHolder {
 
 
     /**
-     * Formats a LocalDateTime into a relative time string
+     * Formats a LocalDateTime into a human-readable relative time string.
+     * Converts the time difference into an appropriate unit (days, hours, or minutes).
      * @param dateTime The LocalDateTime to format
-     * @return A string representing the relative time (e.g., "2 days ago")
+     * @return A string representing the relative time (e.g., "2 days ago", "5 hours ago", "Just now")
      */
     private String formatDateTime(LocalDateTime dateTime) {
         Duration duration = Duration.between(dateTime, LocalDateTime.now());
@@ -127,9 +163,10 @@ public class MovieCardView extends RecyclerView.ViewHolder {
 
 
     /**
-     * Formats duration in minutes to a readable string
-     * @param durationInMinutes Duration in minutes
-     * @return Formatted string (e.g., "2h 30m")
+     * Formats a duration in minutes into a human-readable string.
+     * Converts minutes into hours and remaining minutes.
+     * @param durationInMinutes Total duration in minutes
+     * @return Formatted string in the format "Xh YYm" (e.g., "2h 30m")
      */
     private String formatDuration(int durationInMinutes) {
         int hours = durationInMinutes / 60;

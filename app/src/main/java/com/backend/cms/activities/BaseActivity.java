@@ -1,13 +1,8 @@
 package com.backend.cms.activities;
 
-import android.content.res.ColorStateList;
 import android.content.Intent;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import androidx.cardview.widget.CardView;
-import com.backend.cms.R;
 import com.backend.cms.utils.Mixins;
 
 

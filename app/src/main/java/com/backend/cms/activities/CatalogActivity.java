@@ -41,6 +41,11 @@ import retrofit2.Response;
  * - Filtering content by genre
  * - Searching content by title
  * - Showing detailed information about selected media items
+ * - Deleting media items with confirmation
+ * - Pull-to-refresh functionality for content updates
+ *
+ * The activity implements MovieInteractionListener to handle user interactions with media items
+ * and extends BaseActivity for common functionality across the application.
  */
 public class CatalogActivity extends BaseActivity implements MovieInteractionListener {
     private static final String TAG = "CatalogActivity";
@@ -63,6 +68,12 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
             "Animation"
     };
 
+
+    /**
+     * Initializes the activity, sets up the UI components, and loads initial data.
+     * This method is called when the activity is first created.
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,16 +86,22 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         loadMovies();
     }
 
+
+    /**
+     * Sets up all UI components including RecyclerView, SwipeRefreshLayout, and loading indicators.
+     * This method initializes and configures:
+     * - RecyclerView with its adapter and layout manager
+     * - SwipeRefreshLayout for pull-to-refresh functionality
+     * - Genre spinner for filtering
+     * - SearchView for title search
+     * - Loading indicator for visual feedback during operations
+     */
     private void setupViews() {
         Log.d(TAG, "setupViews: Setting up UI components");
 
-        // Setup RecyclerView
         RecyclerView recyclerView = findViewById(R.id.movies_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Initialize adapter - remove the named parameters syntax
-//        adapter = new MovieAdapter(this, this, this);
-        // or for better readability:
         adapter = new MovieAdapter(
                 this,  // MovieInteractionListener for clicks
                 this,  // MovieInteractionListener for deletes
@@ -92,11 +109,9 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         );
         recyclerView.setAdapter(adapter);
 
-        // Initialize other UI components
         genreSpinner = findViewById(R.id.genreSpinner);
         searchView = findViewById(R.id.searchView);
 
-        // Configure SwipeRefreshLayout
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::loadMovies);
 
@@ -104,13 +119,20 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         Log.d(TAG, "setupViews: UI components initialized successfully");
     }
 
+
+    /**
+     * Handles the delete action for a movie item. Shows a confirmation dialog before deletion
+     * and manages the deletion process through the API.
+     * @param movie The MediaResponse object to be deleted
+     * @param position The position of the item in the RecyclerView
+     */
     @Override
     public void onDeleteClick(MediaResponse movie, int position) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Movie")
                 .setMessage("Are you sure you want to delete " + movie.getTitle() + "?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    showLoading(true);  // Show loading indicator while deleting
+                    showLoading(true);
                     RetrofitClient.getInstance().getApi().deleteByTitle(movie.getTitle())
                             .enqueue(new Callback<Void>() {
                                 @Override
@@ -138,8 +160,11 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
                 .show();
     }
 
+
     /**
-     * Handles errors from delete operation
+     * Processes and displays errors that occur during movie deletion.
+     * Extracts error messages from the response and logs them appropriately.
+     *
      * @param response The error response from the server
      */
     private void handleDeleteError(Response<Void> response) {
@@ -157,19 +182,18 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
     /**
      * Configures the SearchView component with appropriate listeners and styling.
-     * Handles both instant search and submit actions.
+     * Sets up both instant search and submit actions, customizes the appearance,
+     * and handles search queries.
      */
     private void setupSearchView() {
         Log.d(TAG, "setupSearchView: Configuring search functionality");
 
-        // Configure SearchView appearance
         EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(Color.BLACK);
         searchEditText.setHintTextColor(Color.GRAY);
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("Search by movie title");
 
-        // Setup search listeners
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -192,8 +216,9 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
 
     /**
-     * Configures the genre spinner with predefined genres and handles
-     * selection events for filtering content.
+     * Initializes and configures the genre spinner with predefined genres.
+     * Sets up the adapter and selection listener to handle genre filtering.
+     * Implements logic to prevent unnecessary reloading on initial setup.
      */
     private void setupSpinner() {
         Log.d(TAG, "setupSpinner: Setting up genre spinner");
@@ -235,6 +260,8 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
     /**
      * Loads all available media content from the backend.
+     * Initiates an API call to fetch all media items and handles the response
+     * through the handleMediaResponse method.
      */
     private void loadMovies() {
         Log.d(TAG, "loadMovies: Starting to load all movies");
@@ -260,6 +287,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
     /**
      * Loads media content filtered by the specified title.
+     * Initiates an API call to search for media items matching the given title.
      * @param title The title to search for
      */
     private void loadMoviesByTitle(String title) {
@@ -286,6 +314,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
     /**
      * Loads media content filtered by the specified genre.
+     * Initiates an API call to fetch media items of the given genre.
      * @param genre The genre to filter by
      */
     private void loadMoviesByGenre(String genre) {
@@ -311,7 +340,9 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
 
     /**
-     * Handles the response from media-related API calls.
+     * Processes API responses containing media data.
+     * Handles both successful and error responses, updates the UI accordingly,
+     * and manages loading states.
      * @param response The API response containing media data
      * @param context A string describing the context of the API call for logging
      */
@@ -340,7 +371,8 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
 
     /**
-     * Handles network errors from API calls.
+     * Handles network errors that occur during API calls.
+     * Logs the error, updates UI state, and shows error message to user.
      * @param t The throwable containing error details
      */
     private void handleNetworkError(Throwable t) {
@@ -352,6 +384,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
     /**
      * Controls the visibility of loading indicators.
+     * Manages both the ProgressBar and SwipeRefreshLayout states.
      * @param show True to show loading indicators, false to hide them
      */
     private void showLoading(boolean show) {
@@ -366,7 +399,8 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
 
     /**
-     * Displays error messages to the user.
+     * Displays error messages to the user using a toast notification.
+     * Also logs the error message for debugging purposes.
      * @param message The error message to display
      */
     private void showError(String message) {
@@ -377,6 +411,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
 
     /**
      * Handles click events on media items in the RecyclerView.
+     * Opens a dialog showing detailed information about the selected media item.
      * @param media The selected MediaResponse object
      */
     @Override
