@@ -7,11 +7,11 @@ plugins {
 
 
 android {
-    namespace = "com.backend.cms"
+    namespace = "com.example.testingnetflix"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.backend.cms"
+        applicationId = "com.example.testingnetflix"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
