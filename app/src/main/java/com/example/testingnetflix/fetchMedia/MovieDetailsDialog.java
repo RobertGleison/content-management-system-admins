@@ -93,8 +93,8 @@ public class MovieDetailsDialog extends DialogFragment {
         descriptionView.setText(media.getDescription());
 
         // Load thumbnail
-        byte[] thumbnailData = media.getThumbnail();
-        if (thumbnailData != null && thumbnailData.length > 0) {
+        String thumbnailData = media.getThumbnailUrl();
+        if (thumbnailData != null && thumbnailData.length() > 0) {
             Glide.with(requireContext())
                     .load(thumbnailData)
                     .placeholder(R.drawable.placeholder_thumbnail)
@@ -105,6 +105,8 @@ public class MovieDetailsDialog extends DialogFragment {
                     .load(R.drawable.placeholder_thumbnail)
                     .into(thumbnailView);
         }
+
+
 
         // Set click listener for close button
         closeButton.setOnClickListener(v -> dismiss());

@@ -59,7 +59,6 @@ public class UploadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        tokenRefreshHandler = new TokenRefreshHandler(this);
 
         initializeDependencies();
         initializeViews();
@@ -72,7 +71,6 @@ public class UploadActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         // Refresh token when activity resumes
-        tokenRefreshHandler.startTokenRefresh();
     }
 
 
@@ -338,6 +336,5 @@ public class UploadActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         closeUploadConnection();
-        RetrofitClient.getInstance().closeConnection();
     }
 }

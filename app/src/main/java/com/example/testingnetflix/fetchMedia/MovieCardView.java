@@ -1,18 +1,32 @@
 package com.example.testingnetflix.fetchMedia;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.testingnetflix.R;
 import com.example.testingnetflix.entities.MediaResponse;
 import com.example.testingnetflix.utils.Mixins;
 import com.bumptech.glide.Glide;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 
+import java.io.IOException;
+import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +47,7 @@ import java.util.List;
  * through click listeners for both the entire card and the delete button.
  */
 public class MovieCardView extends RecyclerView.ViewHolder {
+    private final String bucketName = "netflixplus-library-cc2024";
     private final CardView cardView;
     private final ImageView thumbnail;
     private final TextView title;
@@ -117,7 +132,7 @@ public class MovieCardView extends RecyclerView.ViewHolder {
         year.setText(String.valueOf(movie.getYear()));
         duration.setText(formatDuration(movie.getDuration()));
 
-        loadThumbnail(movie.getThumbnail());
+        loadThumbnailWithGCS(movie.getThumbnailUrl());
     }
 
 
@@ -125,19 +140,67 @@ public class MovieCardView extends RecyclerView.ViewHolder {
      * Loads thumbnail image using Glide library with error handling.
      * Uses placeholder images for loading and error states.
      * If thumbnail data is null or empty, displays a default placeholder.
-     * @param thumbnailData Byte array containing thumbnail image data
      */
-    private void loadThumbnail(byte[] thumbnailData) {
-        if (thumbnailData != null && thumbnailData.length > 0) {
+    private void loadThumbnail(String thumbnailUrl) {
+        System.out.println("link da thumb:" + thumbnailUrl);
+        // Check if we have a valid GCS URL
+        if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
             Glide.with(thumbnail.getContext())
-                    .load(thumbnailData)
+                    .load(thumbnailUrl)
                     .placeholder(R.drawable.placeholder_thumbnail)
                     .error(R.drawable.error_thumbnail)
                     .into(thumbnail);
         } else {
+            // Load placeholder if no URL available
             Glide.with(thumbnail.getContext())
                     .load(R.drawable.placeholder_thumbnail)
                     .into(thumbnail);
+        }
+    }
+
+    private void loadThumbnailWithGCS(String gcsUrl) {
+        // Convert authenticated URL to public URL
+        String publicUrl = convertToPublicUrl(gcsUrl);
+
+        System.out.println("Public thumbnail URL: " + publicUrl);
+
+        Glide.with(thumbnail.getContext())
+                .load(publicUrl)
+                .placeholder(R.drawable.placeholder_thumbnail)
+                .error(R.drawable.error_thumbnail)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
+                        Log.e("GCS_IMAGE", "Error loading image: " +
+                                (e != null ? e.getMessage() : "unknown error"));
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d("GCS_IMAGE", "Image loaded successfully");
+                        return false;
+                    }
+                })
+                .into(thumbnail);
+    }
+
+    private String convertToPublicUrl(String authenticatedUrl) {
+        try {
+            // Parse the URL to extract bucket and object path
+            URL url = new URL(authenticatedUrl);
+            String path = url.getPath();
+
+            // Remove leading slash and any 'netflixplus-library-cc2024/' prefix if it appears twice
+            path = path.startsWith("/") ? path.substring(1) : path;
+
+            // Construct the public URL
+            return "https://storage.googleapis.com/" + path;
+        } catch (Exception e) {
+            Log.e("GCS_IMAGE", "Error converting URL: " + e.getMessage());
+            return authenticatedUrl; // Return original URL if conversion fails
         }
     }
 

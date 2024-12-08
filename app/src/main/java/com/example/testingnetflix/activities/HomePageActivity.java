@@ -1,11 +1,14 @@
 package com.example.testingnetflix.activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.example.testingnetflix.R;
@@ -17,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 // Activity responsible for the App Home Screen
 public class HomePageActivity extends BaseActivity {
 
+    private static final int PERMISSION_REQUEST_CODE = 123;
     private FirebaseAuth auth;
     private Button logout_button;
     private FirebaseUser user;
@@ -32,14 +36,71 @@ public class HomePageActivity extends BaseActivity {
         setupNavigationCards();
         setupAuthentication();
         initializeTokenRefresh();
+        tokenRefreshHandler.startTokenRefresh();
         setupLogoutButton();
+        checkAndRequestPermissions();
     }
 
+
+
+    private void checkAndRequestPermissions() {
+        // For Android 13 (API 33) and above
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            // Check if we have both permissions
+            if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
+                    checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+
+                // Request both permissions
+                requestPermissions(
+                        new String[]{
+                                android.Manifest.permission.READ_MEDIA_IMAGES,
+                                android.Manifest.permission.READ_MEDIA_VIDEO
+                        },
+                        PERMISSION_REQUEST_CODE
+                );
+            }
+        }
+        // For older Android versions, you might want to request READ_EXTERNAL_STORAGE instead
+        else {
+            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_CODE
+                );
+            }
+        }}
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            boolean allPermissionsGranted = true;
+
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+
+            if (allPermissionsGranted) {
+                // All permissions granted, proceed with your operation
+                // For example, enable media selection buttons
+            } else {
+                // Handle the case where permissions are denied
+                Toast.makeText(this,
+                        "Media permissions are required for uploading content",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        tokenRefreshHandler.startTokenRefresh();
+        checkTokenExpiration();
+
     }
 
 
@@ -111,4 +172,31 @@ public class HomePageActivity extends BaseActivity {
         startActivity(intent);
         finish();
     }
-}
+
+
+    private void checkTokenExpiration() {
+        if (user != null) {
+            user.getIdToken(false)  // false means don't force refresh
+                    .addOnSuccessListener(result -> {
+                        if (result == null || result.getToken() == null) {
+                            // Token is null, logout
+                            FirebaseAuth.getInstance().signOut();
+                            redirectToLogin();
+                        } else {
+                            long expirationTime = result.getExpirationTimestamp() * 1000; // Convert to milliseconds
+                            long currentTime = System.currentTimeMillis();
+
+                            if (currentTime >= expirationTime) {
+                                // Token expired, logout
+                                FirebaseAuth.getInstance().signOut();
+                                redirectToLogin();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Error getting token, logout for safety
+                        FirebaseAuth.getInstance().signOut();
+                        redirectToLogin();
+                    });
+        }
+}}

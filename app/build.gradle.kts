@@ -48,11 +48,26 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/*.kotlin_module"
         }
     }
+
+
+
+
 }
 
 dependencies {
+    implementation("com.google.cloud:google-cloud-storage:2.22.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
     implementation(libs.material.v1110)
     implementation(libs.firebase.database)
     implementation(libs.core.splashscreen)

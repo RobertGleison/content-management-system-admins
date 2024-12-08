@@ -87,7 +87,7 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         setupViews();
         setupSpinner();
         setupSearchView();
-        new Handler().postDelayed(this::loadMovies, 500);
+        loadMovies();
     }
 
 
@@ -436,6 +436,5 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RetrofitClient.getInstance().closeConnection();
     }
 }
