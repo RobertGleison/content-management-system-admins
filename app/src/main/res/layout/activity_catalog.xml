@@ -22,7 +22,6 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/search_view_border"
         android:contentDescription="@string/search_movies"
-        android:iconifiedByDefault="false"
         android:queryHint="@string/search_movie_hint"
         style="@android:style/Widget.Material.SearchView"
         app:layout_constraintEnd_toStartOf="@id/guideline"

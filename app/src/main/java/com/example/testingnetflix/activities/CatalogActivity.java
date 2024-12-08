@@ -192,9 +192,8 @@ public class CatalogActivity extends BaseActivity implements MovieInteractionLis
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("Search by movie title");
 
-        int searchEditTextId = searchView.getContext().getResources()
-                .getIdentifier("search_src_text", "id", "androidx.appcompat");
-        EditText searchEditText = searchView.findViewById(searchEditTextId);
+        // Direct approach to find the EditText
+        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
 
         if (searchEditText != null) {
             searchEditText.setTextColor(Color.BLACK);
