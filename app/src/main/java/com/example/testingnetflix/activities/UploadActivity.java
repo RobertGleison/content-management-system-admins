@@ -14,11 +14,10 @@ import com.example.testingnetflix.R;
 import com.example.testingnetflix.entities.MediaUploadRequest;
 import com.example.testingnetflix.retrofitAPI.RetrofitClient;
 import com.example.testingnetflix.retrofitAPI.RetrofitInterface;
-import com.example.testingnetflix.upload.UploadService;
 import com.example.testingnetflix.upload.MediaHandler;
+import com.example.testingnetflix.upload.UploadService;
 import com.example.testingnetflix.upload.UploadValidator;
 import com.example.testingnetflix.utils.Mixins;
-import com.example.testingnetflix.utils.TokenRefreshHandler;
 
 import java.io.IOException;
 import okhttp3.ResponseBody;
@@ -27,31 +26,33 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Activity responsible for handling media upload functionality.
- * Provides a form interface for users to input media metadata and select media files.
- * Handles the upload process including validation and server communication.
+ * Manages media upload functionality including:
+ * - Media file selection (video and thumbnail)
+ * - Metadata input through form fields
+ * - Upload validation
+ * - Server communication
+ * - Upload status handling
  */
 public class UploadActivity extends BaseActivity {
     private static final String TAG = "UploadActivity";
-    private Call<ResponseBody> uploadCall;
-
-    private RetrofitInterface api;
-    private MediaHandler mediaHandler;
-    private UploadService uploadService;
-
-    // Form fields
-    private EditText movieTitle;
-    private EditText movieDescription;
-    private AutoCompleteTextView movieGenre;
-    private EditText movieYear;
-    private EditText moviePublisher;
-    private EditText movieDuration;
-    private TokenRefreshHandler tokenRefreshHandler;
-
     private static final String[] GENRES = {
             "Comedy", "Drama", "Fantasy", "Fiction",
             "Action", "Horror", "Animation"
     };
+
+    // Services and Handlers
+    private RetrofitInterface apiService;
+    private MediaHandler mediaHandler;
+    private UploadService uploadService;
+    private Call<ResponseBody> activeUploadCall;
+
+    // Form Fields
+    private EditText titleField;
+    private EditText descriptionField;
+    private AutoCompleteTextView genreField;
+    private EditText yearField;
+    private EditText publisherField;
+    private EditText durationField;
 
 
     @Override
@@ -59,101 +60,87 @@ public class UploadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-
-        initializeDependencies();
-        initializeViews();
-        setupGenreDropdown();
-        setupClickListeners();
+        initializeComponents();
+        setupUI();
         clearForm();
     }
 
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        // Refresh token when activity resumes
+    protected void onStop() {
+        super.onStop();
+        cancelActiveUpload();
     }
 
 
     /**
-     * Initializes all dependencies required by the activity
+     * Initializes all required components and services.
      */
-    private void initializeDependencies() {
-        api = RetrofitClient.getInstance().getApi();
+    private void initializeComponents() {
+        apiService = RetrofitClient.getInstance().getApi();
         mediaHandler = new MediaHandler(this);
         uploadService = new UploadService(getContentResolver(), RetrofitClient.getInstance());
     }
 
 
     /**
-     * Initializes all view components
+     * Sets up all UI components and their listeners.
      */
-    private void initializeViews() {
-        movieTitle = findViewById(R.id.edit_movie_title);
-        movieDescription = findViewById(R.id.edit_movie_description);
-        movieGenre = findViewById(R.id.edit_movie_genre);
-        movieYear = findViewById(R.id.edit_movie_year);
-        moviePublisher = findViewById(R.id.edit_movie_publisher);
-        movieDuration = findViewById(R.id.edit_movie_duration);
-    }
-
-
-    /**
-     * Sets up the genre dropdown with predefined genres
-     */
-    private void setupGenreDropdown() {
-        ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(
-                this,
-                R.layout.list_genres,
-                GENRES
-        );
-        movieGenre.setAdapter(genreAdapter);
-
-        movieGenre.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedGenre = (String) parent.getItemAtPosition(position);
-            handleGenreSelection(selectedGenre);
-        });
-    }
-
-
-    /**
-     * Handles the selection of a genre from the dropdown
-     * @param selectedGenre The selected genre
-     */
-    private void handleGenreSelection(String selectedGenre) {
-        // Add any specific genre selection handling here if needed
-    }
-
-
-    /**
-     * Sets up click listeners for all interactive components
-     */
-    private void setupClickListeners() {
-        setupMediaSelectionButtons();
+    private void setupUI() {
+        initializeFormFields();
+        setupGenreDropdown();
+        setupMediaSelectionCards();
         setupSubmitButton();
     }
 
 
     /**
-     * Sets up buttons for media file selection
+     * Initializes form input fields.
      */
-    private void setupMediaSelectionButtons() {
-        CardView addFilesCard = findViewById(R.id.add_files_card);
-        CardView thumbnailUploadCard = findViewById(R.id.card_thumbnail_upload);
+    private void initializeFormFields() {
+        titleField = findViewById(R.id.edit_movie_title);
+        descriptionField = findViewById(R.id.edit_movie_description);
+        genreField = findViewById(R.id.edit_movie_genre);
+        yearField = findViewById(R.id.edit_movie_year);
+        publisherField = findViewById(R.id.edit_movie_publisher);
+        durationField = findViewById(R.id.edit_movie_duration);
+    }
 
-        addFilesCard.setOnClickListener(view -> {
-            Mixins.effectOnClick(this, addFilesCard);
+
+    /**
+     * Sets up the genre selection dropdown.
+     */
+    private void setupGenreDropdown() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                R.layout.list_genres,
+                GENRES
+        );
+        genreField.setAdapter(adapter);
+    }
+
+
+    /**
+     * Sets up media selection cards for video and thumbnail.
+     */
+    private void setupMediaSelectionCards() {
+        CardView videoCard = findViewById(R.id.add_files_card);
+        CardView thumbnailCard = findViewById(R.id.card_thumbnail_upload);
+
+        videoCard.setOnClickListener(view -> {
+            Mixins.effectOnClick(this, videoCard);
             mediaHandler.launchVideoSelector();
         });
 
-        thumbnailUploadCard.setOnClickListener(view -> {
-            Mixins.effectOnClick(this, thumbnailUploadCard);
+        thumbnailCard.setOnClickListener(view -> {
+            Mixins.effectOnClick(this, thumbnailCard);
             mediaHandler.launchThumbnailSelector();
         });
     }
 
 
     /**
-     * Sets up the submit button and its click listener
+     * Sets up the submit button functionality.
      */
     private void setupSubmitButton() {
         TextView submitButton = findViewById(R.id.button_submit);
@@ -162,55 +149,61 @@ public class UploadActivity extends BaseActivity {
 
 
     /**
-     * Resets all form fields to their default empty state
+     * Resets all form fields to their default state.
      */
     public void clearForm() {
-        movieTitle.setText("");
-        movieDescription.setText("");
-        movieGenre.setText("");
-        movieYear.setText("");
-        moviePublisher.setText("");
-        movieDuration.setText("");
+        titleField.setText("");
+        descriptionField.setText("");
+        genreField.setText("");
+        yearField.setText("");
+        publisherField.setText("");
+        durationField.setText("");
         mediaHandler.clearMedia();
     }
 
 
     /**
-     * Creates a MediaUploadRequest from the current form data
-     * @return MediaUploadRequest object containing form data
+     * Creates a media upload request from form data.
      */
     private MediaUploadRequest createUploadRequest() {
-        Integer year = null;
-        Integer duration = null;
+        Integer year = parseNumericField(yearField, "year");
+        Integer duration = parseNumericField(durationField, "duration");
 
-        try {
-            String yearText = movieYear.getText().toString().trim();
-            if (!yearText.isEmpty()) {
-                year = Integer.parseInt(yearText);
-            }
-
-            String durationText = movieDuration.getText().toString().trim();
-            if (!durationText.isEmpty()) {
-                duration = Integer.parseInt(durationText);
-            }
-        } catch (NumberFormatException e) {
-            showQuickToast(this, "Invalid number format in year or duration");
+        if (year == null || duration == null) {
             return null;
         }
 
         return new MediaUploadRequest(
-                movieTitle.getText().toString().trim(),
-                movieDescription.getText().toString().trim(),
-                movieGenre.getText().toString().trim(),
+                titleField.getText().toString().trim(),
+                descriptionField.getText().toString().trim(),
+                genreField.getText().toString().trim(),
                 year,
-                moviePublisher.getText().toString().trim(),
+                publisherField.getText().toString().trim(),
                 duration
         );
     }
 
 
     /**
-     * Handles the media upload process
+     * Parses numeric input fields safely.
+     */
+    private Integer parseNumericField(EditText field, String fieldName) {
+        String text = field.getText().toString().trim();
+        if (text.isEmpty()) {
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            showQuickToast(this, "Invalid " + fieldName + " format");
+            return null;
+        }
+    }
+
+
+    /**
+     * Handles the media upload process including validation.
      */
     private void uploadMedia() {
         MediaUploadRequest request = createUploadRequest();
@@ -227,22 +220,18 @@ public class UploadActivity extends BaseActivity {
             return;
         }
 
-        uploadToServer(request);
+        initiateUpload(request);
     }
 
 
     /**
-     * Initiates the actual upload to the server
-     * @param request The validated MediaUploadRequest
+     * Initiates the upload process to the server.
      */
-    private void uploadToServer(MediaUploadRequest request) {
+    private void initiateUpload(MediaUploadRequest request) {
         showQuickToast(this, "Uploading...");
+        cancelActiveUpload();
 
-        if (uploadCall != null && !uploadCall.isCanceled()) {
-            uploadCall.cancel();
-        }
-
-        uploadCall = uploadService.uploadMedia(
+        activeUploadCall = uploadService.uploadMedia(
                 request,
                 mediaHandler.getVideoFile(),
                 mediaHandler.getThumbnailFile(),
@@ -250,13 +239,13 @@ public class UploadActivity extends BaseActivity {
                 mediaHandler.getSelectedImageUri()
         );
 
-        uploadCall.enqueue(new Callback<ResponseBody>() {
+        activeUploadCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call,
                                    @NonNull Response<ResponseBody> response) {
                 runOnUiThread(() -> {
                     handleUploadResponse(response);
-                    closeUploadConnection();
+                    cancelActiveUpload();
                 });
             }
 
@@ -264,8 +253,8 @@ public class UploadActivity extends BaseActivity {
             public void onFailure(@NonNull Call<ResponseBody> call,
                                   @NonNull Throwable t) {
                 runOnUiThread(() -> {
-                    handleUploadError(t);
-                    closeUploadConnection();
+                    showQuickToast(UploadActivity.this, "Upload failed: " + t.getMessage());
+                    cancelActiveUpload();
                 });
             }
         });
@@ -273,43 +262,15 @@ public class UploadActivity extends BaseActivity {
 
 
     /**
-     * Close Upload Connection
-     */
-    private void closeUploadConnection() {
-        if (uploadCall != null) {
-            uploadCall.cancel(); // Cancel the call if it's still ongoing
-            uploadCall = null;
-        }
-    }
-
-
-    /**
-     * Handles successful upload responses
-     * @param response The server's response
+     * Handles the upload response from the server.
      */
     private void handleUploadResponse(Response<ResponseBody> response) {
         if (response.isSuccessful()) {
-            handleSuccessfulUpload();
-        } else {
-            handleFailedUpload(response);
+            showQuickToast(this, "Upload successful");
+            clearForm();
+            return;
         }
-    }
 
-
-    /**
-     * Handles successful upload completion
-     */
-    private void handleSuccessfulUpload() {
-        showQuickToast(this, "Upload successful");
-        clearForm();
-    }
-
-
-    /**
-     * Handles failed upload attempts
-     * @param response The error response from the server
-     */
-    private void handleFailedUpload(Response<ResponseBody> response) {
         try {
             String errorBody = response.errorBody() != null ?
                     response.errorBody().string() : "Unknown error";
@@ -321,20 +282,12 @@ public class UploadActivity extends BaseActivity {
 
 
     /**
-     * Handles upload process errors
-     * @param t The error that occurred
+     * Cancels any active upload.
      */
-    private void handleUploadError(Throwable t) {
-        showQuickToast(this, "Error: " + t.getMessage());
-    }
-
-
-    /**
-     * Close connection and retrofit client
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        closeUploadConnection();
+    private void cancelActiveUpload() {
+        if (activeUploadCall != null && !activeUploadCall.isCanceled()) {
+            activeUploadCall.cancel();
+            activeUploadCall = null;
+        }
     }
 }

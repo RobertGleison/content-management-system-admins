@@ -43,6 +43,7 @@ public class UsersActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * Creates a new user account using Firebase Authentication.
      * This method:

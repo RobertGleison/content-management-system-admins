@@ -10,8 +10,6 @@ import com.example.testingnetflix.utils.Mixins;
 public abstract class BaseActivity extends AppCompatActivity {
     /**
      * Sets up a click listener for navigation between activities with a visual feedback effect.
-     * @param cardView            The CardView that will trigger the navigation
-     * @param destinationActivity The target activity class to navigate to
      */
     protected void setNavigationClickListener(CardView cardView, Class<?> destinationActivity) {
         cardView.setOnClickListener(view -> {

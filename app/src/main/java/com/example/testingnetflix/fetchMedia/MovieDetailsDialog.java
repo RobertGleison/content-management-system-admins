@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.testingnetflix.R;
 import com.example.testingnetflix.entities.MediaResponse;
 import com.bumptech.glide.Glide;
+import com.example.testingnetflix.utils.ThumbnailLoader;
 
 
 /**
@@ -93,20 +94,8 @@ public class MovieDetailsDialog extends DialogFragment {
         descriptionView.setText(media.getDescription());
 
         // Load thumbnail
-        String thumbnailData = media.getThumbnailUrl();
-        if (thumbnailData != null && thumbnailData.length() > 0) {
-            Glide.with(requireContext())
-                    .load(thumbnailData)
-                    .placeholder(R.drawable.placeholder_thumbnail)
-                    .error(R.drawable.error_thumbnail)
-                    .into(thumbnailView);
-        } else {
-            Glide.with(requireContext())
-                    .load(R.drawable.placeholder_thumbnail)
-                    .into(thumbnailView);
-        }
-
-
+        String thumbnailUrl = media.getThumbnailUrl();
+        ThumbnailLoader.loadThumbnailWithGCS(thumbnailUrl, thumbnailView);
 
         // Set click listener for close button
         closeButton.setOnClickListener(v -> dismiss());

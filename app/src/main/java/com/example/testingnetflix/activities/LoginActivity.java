@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,14 +25,16 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 
 
-// Activity responsible for handle authentication of admin users on CMS
 public class LoginActivity extends AppCompatActivity {
 
+    // UI Components
     private TextInputEditText editTextEmail, editTextPassword;
     private TextInputLayout emailLayout, passwordLayout;
     private TextView textViewForgotPassword;
     private ProgressBar progressBar;
     private Button buttonLogin;
+
+    // Firebase Authentication instance
     private FirebaseAuth mAuth;
 
 
@@ -41,25 +42,27 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupUI();
-        initializeFirebase();
+        mAuth = FirebaseAuth.getInstance();
         setupClickListeners();
     }
 
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        checkExistingUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            navigateToHomePage();
+        }
     }
 
 
     /**
-     * Sets up the initial UI components and edge-to-edge display
+     * Initializes and sets up all UI components.
+     * Configures the edge-to-edge display and window insets.
      */
     private void setupUI() {
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        setupEdgeToEdge();
 
         // Initialize UI components
         emailLayout = findViewById(R.id.email_layout_login);
@@ -69,13 +72,8 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.login_button);
         progressBar = findViewById(R.id.progressBar);
         textViewForgotPassword = findViewById(R.id.forgotPassword);
-    }
 
-
-    /**
-     * Sets up edge-to-edge display handling
-     */
-    private void setupEdgeToEdge() {
+        // Configure edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -85,26 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Initializes Firebase Authentication instance
-     */
-    private void initializeFirebase() {
-        mAuth = FirebaseAuth.getInstance();
-    }
-
-
-    /**
-     * Checks if a user is already logged in and redirects to HomePage if true
-     */
-    private void checkExistingUser() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            navigateToHomePage();
-        }
-    }
-
-
-    /**
-     * Sets up click listeners for login and forgot password buttons
+     * Sets up click listeners for login and forgot password buttons.
      */
     private void setupClickListeners() {
         buttonLogin.setOnClickListener(v -> handleLogin());
@@ -113,29 +92,36 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Handles the login process including input validation
+     * Handles the login process, including input validation and Firebase authentication.
      */
     private void handleLogin() {
-        toggleLoadingState(true);
         String email = String.valueOf(editTextEmail.getText());
         String password = String.valueOf(editTextPassword.getText());
 
         clearErrors();
 
         if (!validateLoginInputs(email, password)) {
-            toggleLoadingState(false);
             return;
         }
 
-        performFirebaseLogin(email, password);
+        toggleLoadingState(true);
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    toggleLoadingState(false);
+                    if (task.isSuccessful()) {
+                        showQuickToast(this, "Login successful");
+                        navigateToHomePage();
+                    } else {
+                        handleLoginError(task);
+                    }
+                });
     }
 
 
     /**
-     * Handles the forgot password process
+     * Handles the password reset process via email.
      */
     private void handleForgotPassword() {
-        progressBar.setVisibility(View.VISIBLE);
         String email = String.valueOf(editTextEmail.getText());
 
         if (TextUtils.isEmpty(email)) {
@@ -143,15 +129,19 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        sendPasswordResetEmail(email);
+        progressBar.setVisibility(View.VISIBLE);
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    progressBar.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        showQuickToast(this, "Password reset email sent");
+                    }
+                });
     }
 
 
     /**
-     * Validates login input fields
-     * @param email User's email
-     * @param password User's password
-     * @return boolean indicating if inputs are valid
+     * Validates user input for login fields.
      */
     private boolean validateLoginInputs(String email, String password) {
         if (TextUtils.isEmpty(email)) {
@@ -170,42 +160,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Performs Firebase login with email and password
-     * @param email User's email
-     * @param password User's password
-     */
-    private void performFirebaseLogin(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    toggleLoadingState(false);
-                    if (task.isSuccessful()) {
-                        showQuickToast(this, "Login successful");
-                        navigateToHomePage();
-                    } else {
-                        handleLoginError(task);
-                    }
-                });
-    }
-
-
-    /**
-     * Sends password reset email to the specified address
-     * @param email User's email address
-     */
-    private void sendPasswordResetEmail(String email) {
-        mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(task -> {
-                    progressBar.setVisibility(View.GONE);
-                    if (task.isSuccessful()) {
-                        showQuickToast(this, "Password reset email sent");
-                    }
-                });
-    }
-
-
-    /**
-     * Handles login errors and shows appropriate messages
-     * @param task Firebase authentication task
+     * Handles Firebase authentication errors and displays appropriate messages.
      */
     private void handleLoginError(Task<AuthResult> task) {
         try {
@@ -220,8 +175,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Toggles the loading state of the UI
-     * @param isLoading boolean indicating if loading is in progress
+     * Toggles the visibility of loading indicators and login button.
      */
     private void toggleLoadingState(boolean isLoading) {
         buttonLogin.setVisibility(isLoading ? View.GONE : View.VISIBLE);
@@ -230,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Clears any existing error messages
+     * Clears any existing error messages from input layouts.
      */
     private void clearErrors() {
         emailLayout.setErrorEnabled(false);
@@ -239,9 +193,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Shows an error message in the specified layout
-     * @param message Error message to display
-     * @param layout TextInputLayout to show error in
+     * Shows an error message in the specified layout and displays a toast.
      */
     private void showError(String message, TextInputLayout layout) {
         showQuickToast(this, message);
@@ -251,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Navigates to the HomePage activity
+     * Navigates to the HomePage activity and finishes current activity.
      */
     private void navigateToHomePage() {
         Intent intent = new Intent(getApplicationContext(), HomePageActivity.class);

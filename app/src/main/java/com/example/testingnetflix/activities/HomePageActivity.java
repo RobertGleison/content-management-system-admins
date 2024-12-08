@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
@@ -16,59 +15,129 @@ import com.example.testingnetflix.utils.TokenRefreshHandler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
-// Activity responsible for the App Home Screen
+/**
+ * HomePageActivity serves as the main dashboard of the application.
+ * It provides navigation to different sections of the app and handles:
+ * - User authentication state management
+ * - Token refresh and validation
+ * - Media permissions for content upload
+ * - Navigation to various app sections (Upload, Library, Users)
+ */
 public class HomePageActivity extends BaseActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 123;
+    private static final String TAG = "HomePageActivity";
+
+    // Firebase components
     private FirebaseAuth auth;
-    private Button logout_button;
     private FirebaseUser user;
+
+    // UI components
+    private Button logoutButton;
+
+    // Token management
     private TokenRefreshHandler tokenRefreshHandler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        initializeComponents();
         setupNavigationCards();
-        setupAuthentication();
-        initializeTokenRefresh();
-        tokenRefreshHandler.startTokenRefresh();
-        setupLogoutButton();
         checkAndRequestPermissions();
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkTokenExpiration();
+    }
 
+
+    /**
+     * Initializes all components including authentication, token refresh,
+     * and UI elements.
+     */
+    private void initializeComponents() {
+        // Initialize authentication
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        // Setup token refresh
+        tokenRefreshHandler = new TokenRefreshHandler(this);
+        tokenRefreshHandler.startTokenRefresh();
+
+        // Initialize UI and auth state
+        setupAuthentication();
+        setupLogoutButton();
+    }
+
+
+    /**
+     * Sets up navigation cards for different app sections.
+     * Each card navigates to its respective activity when clicked.
+     */
+    private void setupNavigationCards() {
+        // Upload section
+        CardView uploadFileCard = findViewById(R.id.homepage_upload_card);
+        setNavigationClickListener(uploadFileCard, UploadActivity.class);
+
+        // Library section
+        CardView libraryCard = findViewById(R.id.homepage_library);
+        setNavigationClickListener(libraryCard, CatalogActivity.class);
+
+        // Users management section
+        CardView usersCard = findViewById(R.id.homepage_users);
+        setNavigationClickListener(usersCard, UsersActivity.class);
+    }
+
+
+    /**
+     * Handles media permissions based on Android version.
+     * Requests appropriate permissions for accessing media files.
+     */
     private void checkAndRequestPermissions() {
-        // For Android 13 (API 33) and above
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            // Check if we have both permissions
-            if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
-                    checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
-
-                // Request both permissions
-                requestPermissions(
-                        new String[]{
-                                android.Manifest.permission.READ_MEDIA_IMAGES,
-                                android.Manifest.permission.READ_MEDIA_VIDEO
-                        },
-                        PERMISSION_REQUEST_CODE
-                );
-            }
+            handleAndroid13Permissions();
+        } else {
+            handleLegacyPermissions();
         }
-        // For older Android versions, you might want to request READ_EXTERNAL_STORAGE instead
-        else {
-            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(
-                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_CODE
-                );
-            }
-        }}
+    }
+
+
+    /**
+     * Handles permissions for Android 13 (API 33) and above.
+     */
+    private void handleAndroid13Permissions() {
+        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(
+                    new String[]{
+                            android.Manifest.permission.READ_MEDIA_IMAGES,
+                            android.Manifest.permission.READ_MEDIA_VIDEO
+                    },
+                    PERMISSION_REQUEST_CODE
+            );
+        }
+    }
+
+
+    /**
+     * Handles permissions for Android versions below 13.
+     */
+    private void handleLegacyPermissions() {
+        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE
+            );
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -76,7 +145,6 @@ public class HomePageActivity extends BaseActivity {
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
             boolean allPermissionsGranted = true;
-
             for (int result : grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
                     allPermissionsGranted = false;
@@ -84,11 +152,7 @@ public class HomePageActivity extends BaseActivity {
                 }
             }
 
-            if (allPermissionsGranted) {
-                // All permissions granted, proceed with your operation
-                // For example, enable media selection buttons
-            } else {
-                // Handle the case where permissions are denied
+            if (!allPermissionsGranted) {
                 Toast.makeText(this,
                         "Media permissions are required for uploading content",
                         Toast.LENGTH_LONG).show();
@@ -96,107 +160,78 @@ public class HomePageActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkTokenExpiration();
-
-    }
-
-
-    private void initializeTokenRefresh() {
-        tokenRefreshHandler = new TokenRefreshHandler(this);
-    }
-
-
 
     /**
-     * Sets up the navigation cards for different sections of the app.
-     * Includes upload file, library, and users management sections.
-     */
-    private void setupNavigationCards() {
-        CardView uploadFileCard = findViewById(R.id.homepage_upload_card);
-        setNavigationClickListener(uploadFileCard, UploadActivity.class);
-
-        CardView libraryCard = findViewById(R.id.homepage_library);
-        setNavigationClickListener(libraryCard, CatalogActivity.class);
-
-        CardView users = findViewById(R.id.homepage_users);
-        setNavigationClickListener(users, UsersActivity.class);
-
-//        CardView settings = findViewById(R.id.homepage_settings);
-//        setNavigationClickListener(settings, SettingsActivity.class);
-    }
-
-
-    /**
-     * Initializes Firebase authentication and checks if user is logged in.
-     * Redirects to login screen if no user is authenticated.
+     * Initializes Firebase authentication and validates user session.
+     * Fetches and logs the user's Firebase token for debugging.
      */
     private void setupAuthentication() {
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-
         if (user == null) {
             redirectToLogin();
-        } else {
-            user.getIdToken(true)
-                    .addOnSuccessListener(result -> {
-                        String token = result.getToken();
-                        Log.d("TOKEN_DEBUG", "Firebase Token: " + token);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("TOKEN_DEBUG", "Failed to get token: " + e.getMessage());
-                    });
+            return;
         }
+
+        user.getIdToken(true)
+                .addOnSuccessListener(result -> {
+                    String token = result.getToken();
+                    Log.d(TAG, "Firebase Token: " + token);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to get token: " + e.getMessage());
+                });
     }
 
+
     /**
-    * Sets up the logout button with click listener to handle user logout.
-    */
-     private void setupLogoutButton() {
-        logout_button = findViewById(R.id.logout_button);
-        logout_button.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
+     * Sets up the logout button functionality.
+     */
+    private void setupLogoutButton() {
+        logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(view -> {
+            auth.signOut();
             redirectToLogin();
         });
     }
 
 
     /**
-     * Helper method to handle redirection to login screen.
-     * Cleans up current activity after starting login activity.
+     * Validates the current token's expiration status.
+     * Redirects to login if token is expired or invalid.
+     */
+    private void checkTokenExpiration() {
+        if (user == null) return;
+
+        user.getIdToken(false)
+                .addOnSuccessListener(result -> {
+                    if (result == null || result.getToken() == null) {
+                        handleInvalidToken();
+                        return;
+                    }
+
+                    long expirationTime = result.getExpirationTimestamp() * 1000;
+                    if (System.currentTimeMillis() >= expirationTime) {
+                        handleInvalidToken();
+                    }
+                })
+                .addOnFailureListener(e -> handleInvalidToken());
+    }
+
+
+    /**
+     * Handles invalid token scenarios by logging out user and redirecting to login.
+     */
+    private void handleInvalidToken() {
+        auth.signOut();
+        redirectToLogin();
+    }
+
+
+    /**
+     * Redirects user to the login screen.
      */
     private void redirectToLogin() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
         finish();
     }
-
-
-    private void checkTokenExpiration() {
-        if (user != null) {
-            user.getIdToken(false)  // false means don't force refresh
-                    .addOnSuccessListener(result -> {
-                        if (result == null || result.getToken() == null) {
-                            // Token is null, logout
-                            FirebaseAuth.getInstance().signOut();
-                            redirectToLogin();
-                        } else {
-                            long expirationTime = result.getExpirationTimestamp() * 1000; // Convert to milliseconds
-                            long currentTime = System.currentTimeMillis();
-
-                            if (currentTime >= expirationTime) {
-                                // Token expired, logout
-                                FirebaseAuth.getInstance().signOut();
-                                redirectToLogin();
-                            }
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        // Error getting token, logout for safety
-                        FirebaseAuth.getInstance().signOut();
-                        redirectToLogin();
-                    });
-        }
-}}
+}

@@ -19,11 +19,7 @@ import com.example.testingnetflix.R;
 import com.example.testingnetflix.entities.MediaResponse;
 import com.example.testingnetflix.utils.Mixins;
 import com.bumptech.glide.Glide;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.example.testingnetflix.utils.ThumbnailLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -132,76 +128,7 @@ public class MovieCardView extends RecyclerView.ViewHolder {
         year.setText(String.valueOf(movie.getYear()));
         duration.setText(formatDuration(movie.getDuration()));
 
-        loadThumbnailWithGCS(movie.getThumbnailUrl());
-    }
-
-
-    /**
-     * Loads thumbnail image using Glide library with error handling.
-     * Uses placeholder images for loading and error states.
-     * If thumbnail data is null or empty, displays a default placeholder.
-     */
-    private void loadThumbnail(String thumbnailUrl) {
-        System.out.println("link da thumb:" + thumbnailUrl);
-        // Check if we have a valid GCS URL
-        if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
-            Glide.with(thumbnail.getContext())
-                    .load(thumbnailUrl)
-                    .placeholder(R.drawable.placeholder_thumbnail)
-                    .error(R.drawable.error_thumbnail)
-                    .into(thumbnail);
-        } else {
-            // Load placeholder if no URL available
-            Glide.with(thumbnail.getContext())
-                    .load(R.drawable.placeholder_thumbnail)
-                    .into(thumbnail);
-        }
-    }
-
-    private void loadThumbnailWithGCS(String gcsUrl) {
-        // Convert authenticated URL to public URL
-        String publicUrl = convertToPublicUrl(gcsUrl);
-
-        System.out.println("Public thumbnail URL: " + publicUrl);
-
-        Glide.with(thumbnail.getContext())
-                .load(publicUrl)
-                .placeholder(R.drawable.placeholder_thumbnail)
-                .error(R.drawable.error_thumbnail)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        Log.e("GCS_IMAGE", "Error loading image: " +
-                                (e != null ? e.getMessage() : "unknown error"));
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d("GCS_IMAGE", "Image loaded successfully");
-                        return false;
-                    }
-                })
-                .into(thumbnail);
-    }
-
-    private String convertToPublicUrl(String authenticatedUrl) {
-        try {
-            // Parse the URL to extract bucket and object path
-            URL url = new URL(authenticatedUrl);
-            String path = url.getPath();
-
-            // Remove leading slash and any 'netflixplus-library-cc2024/' prefix if it appears twice
-            path = path.startsWith("/") ? path.substring(1) : path;
-
-            // Construct the public URL
-            return "https://storage.googleapis.com/" + path;
-        } catch (Exception e) {
-            Log.e("GCS_IMAGE", "Error converting URL: " + e.getMessage());
-            return authenticatedUrl; // Return original URL if conversion fails
-        }
+        ThumbnailLoader.loadThumbnailWithGCS(movie.getThumbnailUrl(), thumbnail);
     }
 
 
