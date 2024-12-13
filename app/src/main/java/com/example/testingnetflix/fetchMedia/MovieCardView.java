@@ -131,7 +131,6 @@ public class MovieCardView extends RecyclerView.ViewHolder {
         ThumbnailLoader.loadThumbnailWithGCS(movie.getThumbnailUrl(), thumbnail);
     }
 
-
     /**
      * Formats a LocalDateTime into a human-readable relative time string.
      * Converts the time difference into an appropriate unit (days, hours, or minutes).
