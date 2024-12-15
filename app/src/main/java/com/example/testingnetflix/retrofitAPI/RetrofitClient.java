@@ -44,6 +44,7 @@ public class RetrofitClient {
      */
     public static void setIdToken(String token) {
         idToken = token;
+        System.out.println("token is: " + idToken);
     }
 
 
