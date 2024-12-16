@@ -10,7 +10,7 @@ public class UploadValidator {
     private static final long MAX_THUMBNAIL_SIZE = 5 * 1024 * 1024; // 5MB
 
     private static final int MAX_YEAR = Year.now().getValue();
-    private static final int MIN_YEAR = 1950;
+    private static final int MIN_YEAR = 1900;
     private static final int MAX_MINUTES_DURATION = 300; // 5 hours
 
     private static final int MAX_TITLE_LENGTH = 200;
