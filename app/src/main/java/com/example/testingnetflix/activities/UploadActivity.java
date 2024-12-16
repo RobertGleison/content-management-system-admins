@@ -2,11 +2,14 @@ package com.example.testingnetflix.activities;
 
 import static com.example.testingnetflix.utils.Mixins.showQuickToast;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
@@ -39,6 +42,7 @@ public class UploadActivity extends BaseActivity {
             "Comedy", "Drama", "Fantasy", "Fiction",
             "Action", "Horror", "Animation"
     };
+    private static final int PERMISSION_REQUEST_CODE = 123;
 
     // Services and Handlers
     private RetrofitInterface apiService;
@@ -62,6 +66,7 @@ public class UploadActivity extends BaseActivity {
 
         initializeComponents();
         setupUI();
+        checkAndRequestPermissions();
         clearForm();
     }
 
@@ -290,4 +295,70 @@ public class UploadActivity extends BaseActivity {
             activeUploadCall = null;
         }
     }
+
+    /**
+     * Handles media permissions based on Android version.
+     * Requests appropriate permissions for accessing media files.
+     */
+    private void checkAndRequestPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            handleAndroid13Permissions();
+        } else {
+            handleLegacyPermissions();
+        }
+    }
+
+
+    /**
+     * Handles permissions for Android 13 (API 33) and above.
+     */
+    private void handleAndroid13Permissions() {
+        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(
+                    new String[]{
+                            android.Manifest.permission.READ_MEDIA_IMAGES,
+                            android.Manifest.permission.READ_MEDIA_VIDEO
+                    },
+                    PERMISSION_REQUEST_CODE
+            );
+        }
+    }
+
+
+    /**
+     * Handles permissions for Android versions below 13.
+     */
+    private void handleLegacyPermissions() {
+        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+
+            if (!allPermissionsGranted) {
+                Toast.makeText(this,
+                        "Media permissions are required for uploading content",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
 }

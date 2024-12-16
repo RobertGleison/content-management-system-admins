@@ -25,7 +25,6 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class HomePageActivity extends BaseActivity {
 
-    private static final int PERMISSION_REQUEST_CODE = 123;
     private static final String TAG = "HomePageActivity";
 
     // Firebase components
@@ -46,7 +45,6 @@ public class HomePageActivity extends BaseActivity {
 
         initializeComponents();
         setupNavigationCards();
-        checkAndRequestPermissions();
     }
 
 
@@ -91,73 +89,7 @@ public class HomePageActivity extends BaseActivity {
 
         // Users management section
         CardView usersCard = findViewById(R.id.homepage_users);
-        setNavigationClickListener(usersCard, UsersActivity.class);
-    }
-
-
-    /**
-     * Handles media permissions based on Android version.
-     * Requests appropriate permissions for accessing media files.
-     */
-    private void checkAndRequestPermissions() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            handleAndroid13Permissions();
-        } else {
-            handleLegacyPermissions();
-        }
-    }
-
-
-    /**
-     * Handles permissions for Android 13 (API 33) and above.
-     */
-    private void handleAndroid13Permissions() {
-        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(
-                    new String[]{
-                            android.Manifest.permission.READ_MEDIA_IMAGES,
-                            android.Manifest.permission.READ_MEDIA_VIDEO
-                    },
-                    PERMISSION_REQUEST_CODE
-            );
-        }
-    }
-
-
-    /**
-     * Handles permissions for Android versions below 13.
-     */
-    private void handleLegacyPermissions() {
-        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                    PERMISSION_REQUEST_CODE
-            );
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            boolean allPermissionsGranted = true;
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
-            }
-
-            if (!allPermissionsGranted) {
-                Toast.makeText(this,
-                        "Media permissions are required for uploading content",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
+        setNavigationClickListener(usersCard, AccountManagementActivity.class);
     }
 
 
@@ -223,15 +155,5 @@ public class HomePageActivity extends BaseActivity {
     private void handleInvalidToken() {
         auth.signOut();
         redirectToLogin();
-    }
-
-
-    /**
-     * Redirects user to the login screen.
-     */
-    private void redirectToLogin() {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        finish();
     }
 }

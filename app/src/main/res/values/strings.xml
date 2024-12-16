@@ -89,6 +89,10 @@
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="delete_movie">Delete movie</string>
+    <string name="create_new_user_button">Create new user button</string>
+    <string name="create_new_admin_account">Create new admin account</string>
+    <string name="delete_my_account">Delete my account</string>
+    <string name="create_new_account">Create new account</string>
 
     <!-- Arrays -->
     <string-array name="languages">

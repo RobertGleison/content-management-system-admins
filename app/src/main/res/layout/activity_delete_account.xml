@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homepage_users"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:overScrollMode="never"
+    android:scrollbars="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="Current User"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/current_user_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="Not signed in"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WARNING"
+                android:layout_marginBottom="10dp"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/confirm"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="Are you sure you want to delete your account?"/>
+
+           <LinearLayout
+               android:layout_marginTop="30dp"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:layout_gravity="center"
+               android:gravity="center"
+               >
+
+               <Button
+                   android:id="@+id/cancel"
+                   android:layout_width="wrap_content"
+                   android:layout_height="60dp"
+                   android:backgroundTint="#525559"
+                   android:text="Cancel"
+                   android:contentDescription="@string/submit_button_desc"
+                   android:textColor="@color/white"
+                   android:textSize="18sp"
+                   android:textStyle="bold" />
+
+
+               <Button
+                   android:id="@+id/delete_confirmed"
+                   android:layout_width="wrap_content"
+                   android:layout_height="60dp"
+                   android:backgroundTint="#AD4E49"
+                   android:text="Yes, delete"
+                   android:layout_marginLeft="20dp"
+                   android:contentDescription="@string/submit_button_desc"
+                   android:textColor="@color/white"
+                   android:textSize="18sp"
+                   android:textStyle="bold" />
+
+           </LinearLayout>
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+</ScrollView>
